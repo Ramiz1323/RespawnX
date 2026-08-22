@@ -4,6 +4,20 @@ import jwt from "jsonwebtoken";
 
 async function sendTokenResponse(user, res) {
     const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, { expiresIn: "1d" })
+
+    res.cookie("token", token);
+
+    res.status(200).json({
+        message,
+        success: true,
+        user: {
+            id: user._id,
+            fullname: user.fullname,
+            email: user.email,
+            contact: user.contact,
+            role: user.role
+        }
+    })
 }
 
 export const register = async (req, res) => {
@@ -22,7 +36,11 @@ export const register = async (req, res) => {
             contact,
             fullname,
             password,
+            role: isSeller ? "Seller" : "Buyer"
         })
+
+        await sendTokenResponse(user, res, "User registered successfully");
+
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Server error" });
