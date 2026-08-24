@@ -1,0 +1,7 @@
+->understand the problem/Feature we have to implement.
+->solution to the problem/Feature using AI.
+->break into smaller tasks.
+->easy to medium then hard tasks.
+-> from the medium level start debugging.
+-> note down all solutions...
+-> expand
