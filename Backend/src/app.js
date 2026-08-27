@@ -1,27 +1,34 @@
 import cookieParser from "cookie-parser";
 import express from "express";
 import authRouter from "./routes/auth.routes.js";
-import cors from "cors";
+import passport from "passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { config } from "./config/config.js";
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(passport.initialize());
 
-app.use(cors({
-  origin: "http://localhost:5173",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}))
+passport.use(new GoogleStrategy({
+  clientID: config.GOOGLE_CLIENT_ID,
+  clientSecret: config.GOOGLE_CLIENT_SECRET,
+  callbackURL: "/api/auth/google/callback"
+},(accessToken, refreshToken, profile, done) => {
+  return done(null, profile);
+}
+))
 
+
+//Routes
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
     message: "Welcome to RespawnX Backend",
   });
 });
-
 
 app.use("/api/auth", authRouter)
 

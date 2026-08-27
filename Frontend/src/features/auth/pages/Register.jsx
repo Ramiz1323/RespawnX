@@ -87,7 +87,11 @@ const Register = () => {
             Register as Seller
           </label>
         </div>
+        <a href="/api/auth/google">
+          Continue with Google
+        </a>
 
+<br />
         <button type="submit">Register</button>
       </form>
     </div>

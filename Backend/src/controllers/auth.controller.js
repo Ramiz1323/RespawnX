@@ -46,3 +46,8 @@ export const register = async (req, res) => {
         return res.status(500).json({ message: "Server error" });
     }
 }
+
+export const googleCallback = async (req, res) => {
+    console.log(req.user);
+    res.redirect("http://localhost:5173/");
+}
