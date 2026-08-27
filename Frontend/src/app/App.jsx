@@ -1,8 +1,12 @@
+import { RouterProvider } from "react-router"
 import "./App.css"
+import { routes } from "./app.routes"
 
 const App = () => {
   return (
-    <div>Hello World!</div>
+    <>
+      <RouterProvider router={routes} />
+    </>
   )
 }
 
