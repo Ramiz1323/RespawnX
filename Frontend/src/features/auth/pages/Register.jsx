@@ -91,7 +91,7 @@ const Register = () => {
           Continue with Google
         </a>
 
-<br />
+        <br />
         <button type="submit">Register</button>
       </form>
     </div>
