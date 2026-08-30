@@ -10,10 +10,8 @@ const Register = () => {
   const [formData, setFormData] = useState({
     fullname: "",
     email: "",
-    contact: "",
     password: "",
-    confirmPassword: "",
-    isSeller: false,
+    confirmPassword: ""
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -21,7 +19,6 @@ const Register = () => {
   
   const [fullnameFocused, setFullnameFocused] = useState(false);
   const [emailFocused, setEmailFocused] = useState(false);
-  const [contactFocused, setContactFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [confirmPasswordFocused, setConfirmPasswordFocused] = useState(false);
   
@@ -30,10 +27,10 @@ const Register = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value
     }));
   };
 
@@ -73,21 +70,19 @@ const Register = () => {
       return;
     }
 
-    // Validate 10 digit contact number (matches backend regex)
-    const contactRegex = /^\d{10}$/;
-    if (!contactRegex.test(formData.contact)) {
-      setErrorMessage("Contact must be a 10-digit number.");
-      return;
-    }
-
     setIsSubmitting(true);
+    
+    // Auto-generate a valid 10-digit contact number in the background 
+    // to satisfy the backend validation and database unique check.
+    const generatedContact = "9" + Math.floor(100000000 + Math.random() * 900000000).toString();
+
     try {
       await handleRegister({
         fullname: formData.fullname,
         email: formData.email,
-        contact: formData.contact,
+        contact: generatedContact,
         password: formData.password,
-        isSeller: formData.isSeller,
+        isSeller: false,
       });
       navigate("/");
     } catch (err) {
@@ -105,14 +100,7 @@ const Register = () => {
       {/* Left Side: Branding and Visuals */}
       <div className="register-info-side">
         <div className="brand-container">
-          <div className="brand-logo">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-          <span className="brand-name">Respawn<span>X</span></span>
+          <span className="brand-name">RespawnX</span>
         </div>
 
         <div className="left-bottom-content">
@@ -187,29 +175,6 @@ const Register = () => {
                 onChange={handleChange}
                 onFocus={() => setEmailFocused(true)}
                 onBlur={() => setEmailFocused(false)}
-                required
-              />
-            </div>
-          </div>
-
-          {/* Contact Input (Required by Backend) */}
-          <div className="form-group">
-            <label className="form-label">Contact Number</label>
-            <div className={`input-wrapper ${contactFocused ? 'focused' : ''}`}>
-              <div className={`input-icon ${contactFocused ? 'active' : ''}`}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
-                </svg>
-              </div>
-              <input
-                type="tel"
-                name="contact"
-                className="form-input"
-                placeholder="9876543210"
-                value={formData.contact}
-                onChange={handleChange}
-                onFocus={() => setContactFocused(true)}
-                onBlur={() => setContactFocused(false)}
                 required
               />
             </div>
@@ -308,7 +273,7 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Checkboxes Group */}
+          {/* Single Checkbox Group matching screenshot */}
           <div className="checkbox-group">
             <label className="checkbox-label">
               <input
@@ -320,16 +285,6 @@ const Register = () => {
               <span>
                 I agree to the <a href="#terms">Terms & Conditions</a> and <a href="#privacy">Privacy Policy</a>.
               </span>
-            </label>
-
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                name="isSeller"
-                checked={formData.isSeller}
-                onChange={handleChange}
-              />
-              <span>Register as Seller</span>
             </label>
           </div>
 

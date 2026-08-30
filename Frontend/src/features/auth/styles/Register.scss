@@ -6,7 +6,7 @@
 
 .register-page-container {
   display: grid;
-  grid-template-columns: 1fr 1.15fr;
+  grid-template-columns: 1.05fr 0.95fr;
   min-height: 100vh;
   background-color: $bg-main;
   font-family: $font-sans;
@@ -23,13 +23,13 @@
   position: relative;
   background-image: url('/mouse_bg.jpg');
   background-size: cover;
-  background-position: center;
+  background-position: 40% center; // Align mouse slightly left-of-center
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 4rem;
+  padding: 4.5rem;
   z-index: 10;
-  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 10px 0 35px rgba(0, 0, 0, 0.6);
 
   @include mobile {
     display: none;
@@ -43,61 +43,49 @@
     right: 0;
     bottom: 0;
     background: linear-gradient(
-      135deg, 
-      rgba($bg-main, 0.75) 0%, 
-      rgba($accent-color, 0.02) 50%, 
-      rgba($bg-main, 0.9) 100%
+      to right,
+      rgba($bg-main, 0.4) 0%, 
+      rgba($bg-main, 0.8) 100%
     );
     z-index: 1;
   }
 
-  // Top logo
+  // Top logo - Text only matching screenshot
   .brand-container {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
     z-index: 2;
 
-    .brand-logo {
-      width: 24px;
-      height: 24px;
-      color: $accent-color;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
     .brand-name {
-      font-size: 1.25rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
       color: $text-primary;
-
-      span {
-        color: $accent-color;
-      }
+      font-family: $font-sans;
     }
   }
 
   // Bottom Content
   .left-bottom-content {
     z-index: 2;
-    max-width: 500px;
-    margin-bottom: 2rem;
+    max-width: 520px;
+    margin-bottom: 1.5rem;
 
     .left-title {
-      font-size: 3rem;
+      font-size: 3.5rem;
       font-weight: 800;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
       letter-spacing: -0.03em;
-      line-height: 1.1;
+      line-height: 1.05;
       color: $text-primary;
     }
 
     .left-desc {
-      font-size: 0.95rem;
+      font-size: 1rem;
       color: $text-secondary;
       line-height: 1.6;
+      font-weight: 400;
+      opacity: 0.85;
     }
   }
 
@@ -106,13 +94,13 @@
     position: absolute;
     bottom: 2rem;
     right: 2rem;
-    opacity: 0.02;
+    opacity: 0.015;
     z-index: 2;
     pointer-events: none;
 
     svg {
-      width: 60px;
-      height: 60px;
+      width: 55px;
+      height: 55px;
       color: #ffffff;
     }
   }
@@ -123,9 +111,10 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 4rem 6rem;
+  padding: 4.5rem 5.5rem;
   background-color: $bg-main;
   overflow-y: auto;
+  border-left: 1px solid rgba(255, 255, 255, 0.02);
 
   @include tablet {
     padding: 3rem 4rem;
@@ -138,35 +127,35 @@
 }
 
 .register-header {
-  margin-bottom: 2rem;
+  margin-bottom: 2.25rem;
+  max-width: 440px;
 
   .title {
-    font-size: 2.25rem;
+    font-size: 2.35rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
     letter-spacing: -0.03em;
     line-height: 1.15;
-    background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: $text-primary;
   }
 
   .subtitle {
     font-size: 0.95rem;
     color: $text-secondary;
     line-height: 1.5;
+    font-weight: 400;
   }
 }
 
 .register-form {
   @include flex-column;
-  gap: 1.25rem;
+  gap: 1.4rem;
   width: 100%;
   max-width: 440px;
 
   .form-group {
     @include flex-column;
-    gap: 0.4rem;
+    gap: 0.45rem;
 
     .form-label {
       font-family: $font-mono;
@@ -193,7 +182,7 @@
       &.focused {
         border-color: $border-focus;
         box-shadow: $glow-accent;
-        background-color: rgba($bg-input, 0.8);
+        background-color: rgba($bg-input, 0.85);
       }
 
       .input-icon {
@@ -212,7 +201,7 @@
 
       .form-input {
         width: 100%;
-        padding: 0.8rem 0.5rem 0.8rem 0;
+        padding: 0.85rem 0.5rem 0.85rem 0;
         background: transparent;
         border: none;
         outline: none;
@@ -248,22 +237,22 @@
       }
     }
 
-    // Password strength indicator
+    // Password strength indicator matching image layout
     .strength-indicator {
-      margin-top: 0.25rem;
+      margin-top: 0.4rem;
       @include flex-column;
-      gap: 0.35rem;
+      gap: 0.4rem;
 
       .strength-bars {
         display: flex;
-        gap: 0.25rem;
+        gap: 0.3rem;
         width: 100%;
 
         .bar {
           flex: 1;
           height: 3px;
           border-radius: 1px;
-          background-color: rgba(255, 255, 255, 0.05);
+          background-color: rgba(255, 255, 255, 0.06);
           transition: background-color $transition-normal;
 
           &.active-weak {
@@ -271,11 +260,11 @@
           }
 
           &.active-fair {
-            background-color: #ffa500;
+            background-color: $accent-color;
           }
 
           &.active-good {
-            background-color: #99ffaa;
+            background-color: $accent-color;
           }
 
           &.active-strong {
@@ -285,16 +274,15 @@
       }
 
       .strength-text {
-        font-family: $font-mono;
-        font-size: 0.7rem;
-        font-weight: 600;
+        font-family: $font-sans;
+        font-size: 0.75rem;
+        font-weight: 700;
         text-align: right;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.02em;
 
         &.weak { color: $danger-color; }
-        &.fair { color: #ffa500; }
-        &.good { color: #99ffaa; }
+        &.fair { color: $accent-color; }
+        &.good { color: $accent-color; }
         &.strong { color: $accent-color; }
       }
     }
@@ -302,16 +290,15 @@
 
   .checkbox-group {
     @include flex-column;
-    gap: 0.6rem;
     margin-top: 0.25rem;
 
     .checkbox-label {
       display: flex;
-      align-items: flex-start;
-      gap: 0.6rem;
+      align-items: center;
+      gap: 0.75rem;
       cursor: pointer;
       color: $text-secondary;
-      font-size: 0.8rem;
+      font-size: 0.825rem;
       user-select: none;
       line-height: 1.4;
 
@@ -331,7 +318,6 @@
         appearance: none;
         width: 16px;
         height: 16px;
-        margin-top: 0.1rem;
         border: 1px solid $border-color;
         border-radius: 2px;
         background-color: $bg-input;
@@ -342,7 +328,7 @@
         flex-shrink: 0;
 
         &:hover {
-          border-color: $accent-color;
+          border-color: $border-hover;
         }
 
         &:checked {
@@ -366,12 +352,13 @@
     width: 100%;
     margin-top: 0.5rem;
     font-size: 0.85rem;
-    letter-spacing: 0.1em;
-    padding: 0.9rem;
+    letter-spacing: 0.05em;
+    padding: 0.95rem;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    border-radius: $radius-sm;
 
     svg {
       width: 16px;
@@ -388,11 +375,11 @@
     display: flex;
     align-items: center;
     width: 100%;
-    margin: 0.5rem 0;
+    margin: 0.75rem 0;
     color: $text-muted;
     font-family: $font-mono;
     font-size: 0.7rem;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
 
     &::before,
     &::after {
@@ -403,8 +390,9 @@
     }
 
     span {
-      padding: 0 1rem;
+      padding: 0 1.25rem;
       text-transform: uppercase;
+      font-weight: 500;
     }
   }
 
@@ -412,23 +400,35 @@
     @include cyber-btn-secondary;
     width: 100%;
     font-size: 0.8rem;
-    letter-spacing: 0.08em;
-    padding: 0.85rem;
+    letter-spacing: 0.05em;
+    padding: 0.9rem;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
+    background-color: #ffffff;
+    color: #121417;
+    border: 1px solid #ffffff;
+    border-radius: $radius-sm;
+    font-family: $font-sans;
+    font-weight: 600;
 
     svg {
       width: 18px;
       height: 18px;
     }
+
+    &:hover {
+      background-color: #e2e8f0;
+      border-color: #e2e8f0;
+      color: #121417;
+    }
   }
 }
 
 .login-redirect {
-  margin-top: 1.75rem;
-  font-size: 0.85rem;
+  margin-top: 2rem;
+  font-size: 0.875rem;
   color: $text-secondary;
   text-align: center;
   max-width: 440px;
