@@ -73,3 +73,6 @@ export async function getProductDetails(req, res) {
     product,
   });
 }
+
+/*********TASK**********/
+// export async function addProductVariant(req, res) {}
