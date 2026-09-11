@@ -105,8 +105,6 @@ export async function addProductVariant(req, res) {
   const stock = req.body.stock;
   const attributes = JSON.parse(req.body.attributes || "{}");
 
-  console.log(price, stock, attributes);
-
   product.variants.push({
     images,
     price: {
