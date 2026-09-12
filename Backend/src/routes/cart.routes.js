@@ -6,4 +6,8 @@ const router = express.Router();
 
 router.use(authenticateUser);
 
-router.get('/', getCart)
+router.get('/', getCart);
+
+
+
+export default router;
