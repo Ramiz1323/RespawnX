@@ -47,8 +47,8 @@ const productSchema = new mongoose.Schema({
                 type: Number,
                 default: 0
             },
-            attributes:{
-                type: String,
+            attributes: {
+                type: Map,
                 of: String
             },
             price: {

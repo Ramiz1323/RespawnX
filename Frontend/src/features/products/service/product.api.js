@@ -28,13 +28,21 @@ export async function getProductById(productId) {
 export async function addProductVariant(productId, newProductVariant){
     const formData = new FormData();
 
-    newProductVariant.images.forEach((image) => {
-        formData.append("images", image.file);
-    });
+    if (newProductVariant.images && Array.isArray(newProductVariant.images)) {
+        newProductVariant.images.forEach((image) => {
+            const file = image?.file || image;
+            if (file) {
+                formData.append("images", file);
+            }
+        });
+    }
 
-    formData.append("stock", newProductVariant.stock);
+    formData.append("stock", newProductVariant.stock ?? 0);
     formData.append("priceAmount", newProductVariant.priceAmount);
-    formData.append("attributes", JSON.stringify(newProductVariant.attributes));
+    if (newProductVariant.priceCurrency) {
+        formData.append("priceCurrency", newProductVariant.priceCurrency);
+    }
+    formData.append("attributes", JSON.stringify(newProductVariant.attributes || {}));
 
     const response = await productApiInstance.post(`/${productId}/variants`, formData);
     return response.data;

@@ -1,0 +1,206 @@
+@use "variables" as *;
+@use "sass:color";
+
+// Flexbox Helpers
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Glassmorphic Cyber Card
+@mixin glass-card {
+  background: rgba($bg-card, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid $border-color;
+  box-shadow: $shadow-lg;
+  border-radius: $radius-lg;
+}
+
+// Futuristic Hardware Card
+@mixin cyber-card {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  box-shadow: $shadow-md;
+  transition: all $transition-smooth;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    border-color: $border-hover;
+    box-shadow: $glow-card, $shadow-lg;
+    transform: translateY(-2px);
+  }
+}
+
+// Neon Cyber Turquoise Button
+@mixin cyber-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: $accent-color;
+  color: #000000;
+  border: none;
+  font-family: $font-sans;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: $radius-sm;
+  padding: 0.75rem 1.4rem;
+  cursor: pointer;
+  transition: all $transition-normal;
+  box-shadow: 0 4px 14px rgba(0, 229, 163, 0.25);
+  text-decoration: none;
+
+  &:hover {
+    background: color.adjust($accent-color, $lightness: 4%);
+    box-shadow: 0 4px 22px rgba(0, 229, 163, 0.5), $glow-accent;
+    transform: translateY(-1px);
+    color: #000000;
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(0, 229, 163, 0.3);
+  }
+
+  &:disabled {
+    background: $text-muted;
+    color: color.adjust($text-muted, $lightness: -20%);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+// Outline Cyber Button
+@mixin cyber-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  color: $text-primary;
+  border: 1px solid $border-color;
+  font-family: $font-sans;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: $radius-sm;
+  padding: 0.75rem 1.4rem;
+  cursor: pointer;
+  transition: all $transition-normal;
+  text-decoration: none;
+
+  &:hover {
+    border-color: $accent-color;
+    color: $accent-color;
+    background: $accent-dim;
+    box-shadow: $glow-accent;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Danger Button
+@mixin cyber-btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: $danger-dim;
+  color: $danger-color;
+  border: 1px solid rgba(255, 74, 90, 0.3);
+  font-family: $font-sans;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  border-radius: $radius-sm;
+  padding: 0.65rem 1.2rem;
+  cursor: pointer;
+  transition: all $transition-normal;
+
+  &:hover {
+    background: $danger-color;
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(255, 74, 90, 0.4);
+  }
+}
+
+// Cyber Tag / Telemetry Badge
+@mixin cyber-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: $font-mono;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: $radius-sm;
+  background: $accent-dim;
+  color: $accent-color;
+  border: 1px solid rgba(0, 229, 163, 0.2);
+}
+
+// Cyber Input Control
+@mixin cyber-input {
+  width: 100%;
+  background: $bg-input;
+  border: 1px solid $border-color;
+  border-radius: $radius-sm;
+  padding: 0.75rem 1rem;
+  color: $text-primary;
+  font-family: $font-sans;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all $transition-fast;
+
+  &:focus {
+    border-color: $border-focus;
+    box-shadow: $glow-accent;
+    background: rgba($bg-input, 0.9);
+  }
+
+  &::placeholder {
+    color: $text-muted;
+  }
+}
+
+// Responsive Breakpoints
+@mixin mobile {
+  @media (max-width: 768px) { @content; }
+}
+
+@mixin tablet {
+  @media (max-width: 1024px) { @content; }
+}
+
+@mixin desktop {
+  @media (min-width: 1025px) { @content; }
+}

@@ -1,0 +1,88 @@
+@use "variables" as *;
+@use "mixins" as *;
+
+.protected-loading {
+  min-height: 100vh;
+  background-color: $bg-main;
+  color: $accent-color;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $font-mono;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+}
+
+.clearance-denied-layout {
+  min-height: 100vh;
+  background-color: $bg-main;
+  color: $text-primary;
+  display: flex;
+  flex-direction: column;
+
+  .clearance-denied-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1.5rem;
+  }
+
+  .clearance-card {
+    max-width: 520px;
+    width: 100%;
+    background: $bg-card;
+    border: 1px solid rgba(255, 74, 90, 0.35);
+    border-radius: $radius-lg;
+    padding: 2.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: $shadow-lg;
+
+    .icon-danger {
+      color: $danger-color;
+      filter: drop-shadow(0 0 12px rgba(255, 74, 90, 0.4));
+    }
+
+    .clearance-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0;
+      color: $text-primary;
+    }
+
+    .clearance-desc {
+      color: $text-secondary;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin: 0;
+
+      strong {
+        color: $text-primary;
+      }
+    }
+
+    .clearance-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+
+      @include mobile {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .btn-store {
+        @include cyber-btn-primary;
+      }
+
+      .btn-register-seller {
+        @include cyber-btn-secondary;
+      }
+    }
+  }
+}

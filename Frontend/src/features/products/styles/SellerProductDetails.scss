@@ -1,0 +1,504 @@
+@use "variables" as *;
+@use "mixins" as *;
+
+.seller-details-page {
+  min-height: 100vh;
+  background-color: $bg-main;
+  color: $text-primary;
+  display: flex;
+  flex-direction: column;
+
+  .seller-details-container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 6rem;
+    width: 100%;
+  }
+
+  // Navigation / Back link
+  .top-nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: $font-mono;
+      font-size: 0.8rem;
+      color: $text-secondary;
+      text-decoration: none;
+      transition: color $transition-fast;
+
+      &:hover {
+        color: $accent-color;
+      }
+    }
+
+    .public-view-link {
+      @include cyber-btn-secondary;
+      padding: 0.5rem 1rem;
+      font-size: 0.78rem;
+    }
+  }
+
+  // Hardware Overview Card
+  .hardware-overview {
+    background: $bg-card;
+    border: 1px solid $border-color;
+    border-radius: $radius-lg;
+    padding: 2rem;
+    margin-bottom: 2.5rem;
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    gap: 2rem;
+    align-items: center;
+
+    @include tablet {
+      grid-template-columns: 1fr;
+    }
+
+    .thumb-viewport {
+      width: 140px;
+      height: 110px;
+      border-radius: $radius-md;
+      border: 1px solid $border-color;
+      background: #08090a;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .placeholder-icon {
+        color: $text-muted;
+        width: 32px;
+        height: 32px;
+      }
+    }
+
+    .hardware-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .badge-id {
+        font-family: $font-mono;
+        font-size: 0.72rem;
+        color: $accent-color;
+        letter-spacing: 0.08em;
+      }
+
+      .title {
+        font-size: 1.6rem;
+        font-weight: 800;
+        margin: 0;
+        color: $text-primary;
+      }
+
+      .desc {
+        font-size: 0.85rem;
+        color: $text-secondary;
+        margin: 0;
+        max-width: 600px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    }
+
+    .price-badge-box {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 1rem 1.5rem;
+      border-radius: $radius-md;
+      border: 1px solid $border-color;
+
+      @include tablet {
+        align-items: flex-start;
+      }
+
+      .lbl {
+        font-family: $font-mono;
+        font-size: 0.68rem;
+        color: $text-muted;
+        text-transform: uppercase;
+      }
+
+      .amt {
+        font-family: $font-mono;
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: $accent-color;
+      }
+    }
+  }
+
+  // Two-column section: Add Variant Form (Left) & Existing Variants List (Right)
+  .variant-manager-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1.35fr;
+    gap: 2.5rem;
+
+    @include tablet {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  // Add Variant Panel
+  .add-variant-panel {
+    background: $bg-card;
+    border: 1px solid $border-color;
+    border-radius: $radius-lg;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    .panel-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+
+      .title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0;
+        color: $text-primary;
+      }
+
+      .sub {
+        font-size: 0.82rem;
+        color: $text-secondary;
+        margin: 0;
+      }
+    }
+
+    .variant-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+
+      @include mobile {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+
+      .label {
+        font-family: $font-mono;
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: $text-secondary;
+      }
+
+      .input {
+        @include cyber-input;
+      }
+    }
+
+    // Dynamic Attribute Builder
+    .attributes-builder {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+
+      .attr-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .label {
+          font-family: $font-mono;
+          font-size: 0.72rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          color: $text-secondary;
+        }
+
+        .btn-add-attr {
+          background: none;
+          border: none;
+          font-family: $font-mono;
+          font-size: 0.72rem;
+          color: $accent-color;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 0.3rem;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      .attr-rows {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        .attr-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr auto;
+          gap: 0.5rem;
+          align-items: center;
+
+          .btn-remove-attr {
+            background: none;
+            border: none;
+            color: $danger-color;
+            cursor: pointer;
+            padding: 4px;
+
+            &:hover {
+              opacity: 0.8;
+            }
+          }
+        }
+      }
+    }
+
+    // Variant image upload zone
+    .variant-upload {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .label {
+        font-family: $font-mono;
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: $text-secondary;
+      }
+
+      .upload-box {
+        border: 1px dashed $border-color;
+        border-radius: $radius-sm;
+        padding: 1.25rem;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        transition: border-color $transition-fast;
+
+        &:hover {
+          border-color: $accent-color;
+        }
+
+        .upload-text {
+          font-size: 0.82rem;
+          color: $text-secondary;
+        }
+      }
+
+      .previews-container {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+
+        .thumb-preview {
+          position: relative;
+          width: 50px;
+          height: 50px;
+          border-radius: $radius-sm;
+          border: 1px solid $border-color;
+          overflow: hidden;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+
+          .del-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: rgba(0, 0, 0, 0.7);
+            color: $danger-color;
+            border: none;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
+    .btn-submit-variant {
+      @include cyber-btn-primary;
+      padding: 0.9rem;
+      font-size: 0.9rem;
+    }
+  }
+
+  // Existing Variants List Panel
+  .variants-list-panel {
+    background: $bg-card;
+    border: 1px solid $border-color;
+    border-radius: $radius-lg;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0;
+        color: $text-primary;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        .count-tag {
+          font-family: $font-mono;
+          font-size: 0.72rem;
+          background: $accent-dim;
+          color: $accent-color;
+          padding: 0.2rem 0.5rem;
+          border-radius: $radius-sm;
+        }
+      }
+    }
+
+    .variants-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      .variant-item-card {
+        background: $bg-input;
+        border: 1px solid $border-color;
+        border-radius: $radius-md;
+        padding: 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        transition: all $transition-fast;
+
+        &:hover {
+          border-color: $border-hover;
+        }
+
+        .variant-left {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+
+          .variant-img {
+            width: 54px;
+            height: 54px;
+            border-radius: $radius-sm;
+            border: 1px solid $border-color;
+            background: #08090a;
+            object-fit: cover;
+            flex-shrink: 0;
+          }
+
+          .variant-img-placeholder {
+            width: 54px;
+            height: 54px;
+            border-radius: $radius-sm;
+            border: 1px solid $border-color;
+            background: #0c0e12;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: $text-muted;
+            flex-shrink: 0;
+
+            svg {
+              width: 22px;
+              height: 22px;
+            }
+          }
+
+          .variant-specs {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+
+            .attr-pills {
+              display: flex;
+              gap: 0.4rem;
+              flex-wrap: wrap;
+
+              .attr-pill {
+                font-family: $font-mono;
+                font-size: 0.7rem;
+                background: rgba(255, 255, 255, 0.05);
+                color: $text-secondary;
+                padding: 0.15rem 0.45rem;
+                border-radius: 2px;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+
+                strong {
+                  color: $text-primary;
+                }
+              }
+            }
+
+            .stock-tag {
+              font-family: $font-mono;
+              font-size: 0.72rem;
+              color: $text-muted;
+
+              span {
+                color: $accent-color;
+                font-weight: 700;
+              }
+            }
+          }
+        }
+
+        .variant-price {
+          font-family: $font-mono;
+          font-size: 1.15rem;
+          font-weight: 800;
+          color: $accent-color;
+          white-space: nowrap;
+        }
+      }
+    }
+
+    .no-variants-placeholder {
+      padding: 3rem 1.5rem;
+      text-align: center;
+      border: 1px dashed $border-color;
+      border-radius: $radius-md;
+      color: $text-muted;
+      font-size: 0.88rem;
+    }
+  }
+}

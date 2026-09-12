@@ -3,17 +3,22 @@ import userModel from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 
 async function sendTokenResponse(user, res, message) {
-  const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
+  const token = jwt.sign({ id: user._id, _id: user._id }, config.JWT_SECRET, {
     expiresIn: "1d",
   });
 
-  res.cookie("token", token);
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: config.NODE_ENV === "production",
+    sameSite: "lax",
+  });
 
   res.status(200).json({
     message,
     success: true,
     user: {
       id: user._id,
+      _id: user._id,
       fullname: user.fullname,
       email: user.email,
       contact: user.contact,
@@ -75,7 +80,65 @@ export const googleCallback = async (req, res) => {
     },
   );
 
-  res.cookie("token", token);
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: config.NODE_ENV === "production",
+    sameSite: "lax",
+  });
 
   res.redirect("http://localhost:5173/");
+};
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
+
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    await sendTokenResponse(user, res, "Login successful");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const getMe = async (req, res) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    res.status(200).json({
+      success: true,
+      user: {
+        id: user._id,
+        _id: user._id,
+        fullname: user.fullname,
+        email: user.email,
+        contact: user.contact,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const logout = async (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ success: true, message: "Logged out successfully" });
 };

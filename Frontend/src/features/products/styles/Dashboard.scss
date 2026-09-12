@@ -1,0 +1,371 @@
+@use "variables" as *;
+@use "mixins" as *;
+
+.dashboard-page {
+  min-height: 100vh;
+  background-color: $bg-main;
+  color: $text-primary;
+  display: flex;
+  flex-direction: column;
+
+  .dashboard-container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+    width: 100%;
+  }
+
+  // Dashboard Header
+  .dash-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+
+    @include mobile {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+
+      .dash-telemetry {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: $font-mono;
+        font-size: 0.72rem;
+        color: $accent-color;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+
+        .status-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: $accent-color;
+          box-shadow: 0 0 8px $accent-color;
+        }
+      }
+
+      .dash-title {
+        font-size: 2.3rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin: 0;
+        background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .dash-subtitle {
+        font-size: 0.92rem;
+        color: $text-secondary;
+        margin: 0;
+      }
+    }
+
+    .deploy-btn {
+      @include cyber-btn-primary;
+      padding: 0.8rem 1.5rem;
+      font-size: 0.88rem;
+
+      @include mobile {
+        width: 100%;
+      }
+    }
+  }
+
+  // Metrics Row
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+
+    @include tablet {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include mobile {
+      grid-template-columns: 1fr;
+    }
+
+    .metric-card {
+      background: $bg-card;
+      border: 1px solid $border-color;
+      border-radius: $radius-md;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      position: relative;
+      overflow: hidden;
+      transition: all $transition-fast;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: transparent;
+        transition: background $transition-fast;
+      }
+
+      &:hover {
+        border-color: $border-hover;
+
+        &::after {
+          background: $accent-color;
+          box-shadow: 0 0 10px $accent-color;
+        }
+      }
+
+      .card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .card-icon {
+          width: 22px;
+          height: 22px;
+          color: $accent-color;
+        }
+
+        .card-label {
+          font-family: $font-mono;
+          font-size: 0.72rem;
+          color: $text-muted;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+      }
+
+      .card-value {
+        font-family: $font-mono;
+        font-size: 1.9rem;
+        font-weight: 800;
+        color: $text-primary;
+        letter-spacing: -0.02em;
+      }
+
+      .card-trend {
+        font-family: $font-mono;
+        font-size: 0.72rem;
+        color: $accent-color;
+      }
+    }
+  }
+
+  // Inventory Table Section
+  .inventory-section {
+    background: $bg-card;
+    border: 1px solid $border-color;
+    border-radius: $radius-lg;
+    overflow: hidden;
+
+    .inventory-header {
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid $border-color;
+      gap: 1rem;
+
+      @include mobile {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .section-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: $text-primary;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+
+        .count-pill {
+          font-family: $font-mono;
+          font-size: 0.72rem;
+          color: $accent-color;
+          background: $accent-dim;
+          padding: 0.2rem 0.5rem;
+          border-radius: $radius-sm;
+        }
+      }
+
+      .table-search {
+        position: relative;
+        max-width: 320px;
+        width: 100%;
+
+        .search-input {
+          @include cyber-input;
+          padding-left: 2.4rem;
+          height: 38px;
+          font-size: 0.82rem;
+        }
+
+        .search-icon {
+          position: absolute;
+          left: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 16px;
+          height: 16px;
+          color: $text-muted;
+        }
+      }
+    }
+
+    // Table view
+    .table-container {
+      overflow-x: auto;
+
+      .cyber-table {
+        width: 100%;
+        border-collapse: collapse;
+
+        th {
+          font-family: $font-mono;
+          font-size: 0.72rem;
+          font-weight: 600;
+          color: $text-muted;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          text-align: left;
+          padding: 0.9rem 1.5rem;
+          background: rgba(0, 0, 0, 0.2);
+          border-bottom: 1px solid $border-color;
+        }
+
+        td {
+          padding: 1rem 1.5rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+          font-size: 0.88rem;
+          color: $text-secondary;
+          vertical-align: middle;
+        }
+
+        tr:hover td {
+          background: rgba(255, 255, 255, 0.02);
+        }
+
+        .hardware-cell {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+
+          .thumb {
+            width: 48px;
+            height: 48px;
+            border-radius: $radius-sm;
+            border: 1px solid $border-color;
+            background: #08090a;
+            object-fit: cover;
+            flex-shrink: 0;
+          }
+
+          .thumb-placeholder {
+            width: 48px;
+            height: 48px;
+            border-radius: $radius-sm;
+            border: 1px solid $border-color;
+            background: #0c0e12;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: $text-muted;
+            flex-shrink: 0;
+
+            svg {
+              width: 20px;
+              height: 20px;
+            }
+          }
+
+          .info {
+            display: flex;
+            flex-direction: column;
+
+            .title {
+              font-weight: 600;
+              color: $text-primary;
+            }
+
+            .sub-id {
+              font-family: $font-mono;
+              font-size: 0.68rem;
+              color: $text-muted;
+            }
+          }
+        }
+
+        .price-text {
+          font-family: $font-mono;
+          font-weight: 700;
+          color: $accent-color;
+        }
+
+        .variants-pill {
+          display: inline-flex;
+          align-items: center;
+          font-family: $font-mono;
+          font-size: 0.72rem;
+          color: $text-secondary;
+          background: rgba(255, 255, 255, 0.04);
+          padding: 0.25rem 0.6rem;
+          border-radius: $radius-sm;
+          border: 1px solid $border-color;
+        }
+
+        .actions-cell {
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+
+          .btn-action-variants {
+            @include cyber-btn-primary;
+            padding: 0.45rem 0.85rem;
+            font-size: 0.75rem;
+          }
+
+          .btn-action-view {
+            @include cyber-btn-secondary;
+            padding: 0.45rem 0.85rem;
+            font-size: 0.75rem;
+          }
+        }
+      }
+    }
+
+    // Empty state
+    .inventory-empty {
+      padding: 4rem 2rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+
+      .empty-icon {
+        width: 48px;
+        height: 48px;
+        color: $text-muted;
+      }
+
+      .empty-text {
+        font-size: 1rem;
+        color: $text-secondary;
+      }
+    }
+  }
+}

@@ -1,0 +1,171 @@
+@use "variables" as *;
+@use "mixins" as *;
+
+.cyber-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background: rgba($bg-main, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid $border-color;
+  transition: all $transition-normal;
+
+  .navbar-container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0.9rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  // Brand Area
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+
+    .brand-icon {
+      width: 28px;
+      height: 28px;
+      color: $accent-color;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 0 8px rgba(0, 229, 163, 0.4));
+
+      svg {
+        width: 28px;
+        height: 28px;
+      }
+    }
+
+    .brand-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: $text-primary;
+
+      span {
+        color: $accent-color;
+      }
+    }
+
+    .brand-badge {
+      font-family: $font-mono;
+      font-size: 0.65rem;
+      color: $accent-color;
+      border: 1px solid rgba(0, 229, 163, 0.3);
+      padding: 0.15rem 0.4rem;
+      border-radius: 2px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: $accent-dim;
+
+      @include mobile {
+        display: none;
+      }
+    }
+  }
+
+  // Nav Links
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    @include mobile {
+      gap: 0.25rem;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: $font-sans;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: $text-secondary;
+      text-decoration: none;
+      padding: 0.5rem 0.85rem;
+      border-radius: $radius-sm;
+      transition: all $transition-fast;
+
+      &:hover {
+        color: $text-primary;
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      &.active {
+        color: $accent-color;
+        background: $accent-dim;
+        border: 1px solid rgba(0, 229, 163, 0.2);
+      }
+    }
+  }
+
+  // Right Actions Area
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+
+    .deploy-btn {
+      @include cyber-btn-primary;
+      padding: 0.55rem 1rem;
+      font-size: 0.78rem;
+
+      @include mobile {
+        padding: 0.45rem 0.75rem;
+        font-size: 0.72rem;
+      }
+    }
+
+    .auth-link {
+      @include cyber-btn-secondary;
+      padding: 0.55rem 1rem;
+      font-size: 0.78rem;
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: $bg-input;
+      border: 1px solid $border-color;
+      padding: 0.4rem 0.8rem;
+      border-radius: $radius-sm;
+      font-family: $font-mono;
+      font-size: 0.78rem;
+      color: $text-primary;
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: $accent-color;
+        box-shadow: 0 0 8px $accent-color;
+      }
+
+      .user-name {
+        max-width: 110px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .role-tag {
+        font-size: 0.65rem;
+        color: $accent-color;
+        text-transform: uppercase;
+      }
+    }
+  }
+}

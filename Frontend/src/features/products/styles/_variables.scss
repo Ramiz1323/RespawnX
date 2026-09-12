@@ -1,0 +1,48 @@
+// Design Tokens synced with RespawnX Auth Cyberpunk Theme
+$font-sans: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+$font-mono: 'JetBrains Mono', 'Share Tech Mono', SFMono-Regular, Consolas, monospace;
+
+// Colors
+$bg-main: #0c0d0e;
+$bg-card: #121417;
+$bg-card-hover: #16191f;
+$bg-card-subtle: rgba(18, 20, 23, 0.7);
+$bg-input: #181a1f;
+
+$border-color: rgba(255, 255, 255, 0.08);
+$border-hover: rgba(0, 229, 163, 0.3);
+$border-focus: #00e5a3;
+
+$text-primary: #ffffff;
+$text-secondary: #8e95a5;
+$text-muted: #575e6d;
+
+$accent-color: #00e5a3;
+$accent-hover: #00cc90;
+$accent-dim: rgba(0, 229, 163, 0.1);
+$accent-glow: rgba(0, 229, 163, 0.35);
+
+$danger-color: #ff4a5a;
+$danger-dim: rgba(255, 74, 90, 0.1);
+$warning-color: #f59e0b;
+$warning-dim: rgba(245, 158, 11, 0.1);
+$info-color: #38bdf8;
+$info-dim: rgba(56, 189, 248, 0.1);
+
+// Shadows & Glows
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+$shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+$shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.7);
+$glow-accent: 0 0 15px rgba(0, 229, 163, 0.3);
+$glow-accent-btn: 0 0 25px rgba(0, 229, 163, 0.5);
+$glow-card: 0 0 30px rgba(0, 229, 163, 0.08);
+
+// Layout & Spacing
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 16px;
+
+$transition-fast: 0.15s ease;
+$transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);

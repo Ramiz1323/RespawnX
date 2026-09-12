@@ -1,0 +1,213 @@
+@use "variables" as *;
+@use "mixins" as *;
+
+.cyber-product-card {
+  @include cyber-card;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: $bg-card;
+  text-decoration: none;
+  color: inherit;
+  border-radius: $radius-md;
+  border: 1px solid $border-color;
+  position: relative;
+  group: 1;
+
+  // Corner HUD brackets
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    pointer-events: none;
+    transition: all $transition-fast;
+    opacity: 0.6;
+    z-index: 2;
+  }
+
+  &::before {
+    top: 6px;
+    left: 6px;
+    border-top: 2px solid $accent-color;
+    border-left: 2px solid $accent-color;
+  }
+
+  &::after {
+    bottom: 6px;
+    right: 6px;
+    border-bottom: 2px solid $accent-color;
+    border-right: 2px solid $accent-color;
+  }
+
+  &:hover {
+    &::before,
+    &::after {
+      width: 14px;
+      height: 14px;
+      opacity: 1;
+    }
+  }
+
+  .card-media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: #08090a;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .image-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: radial-gradient(circle at center, #1b2028 0%, #0c0d0f 100%);
+      color: $text-muted;
+
+      svg {
+        width: 38px;
+        height: 38px;
+        opacity: 0.4;
+      }
+
+      span {
+        font-family: $font-mono;
+        font-size: 0.72rem;
+        letter-spacing: 0.05em;
+      }
+    }
+
+    .status-badge-container {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 3;
+    }
+
+    .variant-count-badge {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      z-index: 3;
+      font-family: $font-mono;
+      font-size: 0.68rem;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      color: $text-secondary;
+      padding: 0.2rem 0.5rem;
+      border-radius: $radius-sm;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  &:hover .card-media .product-image {
+    transform: scale(1.06);
+  }
+
+  .card-content {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 0.6rem;
+
+    .product-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: $text-primary;
+      margin: 0;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      transition: color $transition-fast;
+    }
+
+    .product-desc {
+      font-size: 0.82rem;
+      color: $text-secondary;
+      line-height: 1.45;
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-footer {
+      margin-top: auto;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .price-block {
+        display: flex;
+        flex-direction: column;
+
+        .price-label {
+          font-family: $font-mono;
+          font-size: 0.65rem;
+          color: $text-muted;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .price-val {
+          font-family: $font-mono;
+          font-size: 1.15rem;
+          font-weight: 700;
+          color: $accent-color;
+          letter-spacing: -0.02em;
+        }
+      }
+
+      .action-trigger {
+        font-family: $font-mono;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: $text-secondary;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        transition: all $transition-fast;
+
+        svg {
+          width: 14px;
+          height: 14px;
+          transition: transform $transition-fast;
+        }
+      }
+    }
+  }
+
+  &:hover {
+    .card-content .product-title {
+      color: $accent-color;
+    }
+
+    .card-footer .action-trigger {
+      color: $accent-color;
+
+      svg {
+        transform: translateX(3px);
+      }
+    }
+  }
+}

@@ -1,0 +1,322 @@
+@use "variables" as *;
+@use "mixins" as *;
+
+.create-product-page {
+  min-height: 100vh;
+  background-color: $bg-main;
+  color: $text-primary;
+  display: flex;
+  flex-direction: column;
+
+  .create-container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+    width: 100%;
+  }
+
+  // Page Header
+  .page-header {
+    margin-bottom: 2.5rem;
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: $font-mono;
+      font-size: 0.75rem;
+      color: $accent-color;
+      background: $accent-dim;
+      border: 1px solid rgba(0, 229, 163, 0.3);
+      padding: 0.25rem 0.6rem;
+      border-radius: $radius-sm;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .page-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.5rem;
+      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      @include mobile {
+        font-size: 1.85rem;
+      }
+    }
+
+    .page-subtitle {
+      font-size: 0.95rem;
+      color: $text-secondary;
+      margin: 0;
+    }
+  }
+
+  // Dual Column Layout
+  .create-grid {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: 3rem;
+    align-items: start;
+
+    @include tablet {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+  }
+
+  // Left Column: Form Panel
+  .form-panel {
+    background: $bg-card;
+    border: 1px solid $border-color;
+    border-radius: $radius-lg;
+    padding: 2.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    box-shadow: $shadow-lg;
+
+    @include mobile {
+      padding: 1.5rem;
+    }
+
+    .status-alert {
+      padding: 0.85rem 1rem;
+      border-radius: $radius-sm;
+      font-family: $font-mono;
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+
+      &.error {
+        background: $danger-dim;
+        border: 1px solid rgba(255, 74, 90, 0.4);
+        color: $danger-color;
+      }
+
+      &.success {
+        background: $accent-dim;
+        border: 1px solid rgba(0, 229, 163, 0.4);
+        color: $accent-color;
+      }
+    }
+
+    .deploy-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .field-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-family: $font-mono;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: $text-secondary;
+
+        .field-count {
+          font-weight: 400;
+          color: $text-muted;
+        }
+      }
+
+      .field-input {
+        @include cyber-input;
+      }
+
+      .field-textarea {
+        @include cyber-input;
+        resize: vertical;
+        min-height: 110px;
+      }
+
+      .field-hint {
+        font-size: 0.75rem;
+        color: $text-muted;
+      }
+    }
+
+    // Price Row with currency dropdown
+    .price-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 1rem;
+
+      @include mobile {
+        grid-template-columns: 1fr;
+      }
+
+      .currency-select {
+        @include cyber-input;
+        cursor: pointer;
+      }
+    }
+
+    // Image Upload Dropzone
+    .upload-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+
+      .dropzone {
+        border: 2px dashed $border-color;
+        border-radius: $radius-md;
+        padding: 2rem 1.5rem;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.25);
+        cursor: pointer;
+        transition: all $transition-fast;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.6rem;
+
+        &:hover {
+          border-color: $accent-color;
+          background: rgba(0, 229, 163, 0.03);
+        }
+
+        .upload-icon {
+          width: 38px;
+          height: 38px;
+          color: $accent-color;
+        }
+
+        .dropzone-title {
+          font-size: 0.92rem;
+          font-weight: 600;
+          color: $text-primary;
+          margin: 0;
+        }
+
+        .dropzone-sub {
+          font-size: 0.78rem;
+          color: $text-muted;
+          margin: 0;
+        }
+
+        .file-hidden-input {
+          display: none;
+        }
+      }
+
+      // Previews Reel
+      .image-previews {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.65rem;
+
+        @include mobile {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .preview-card {
+          position: relative;
+          aspect-ratio: 1;
+          border-radius: $radius-sm;
+          border: 1px solid $border-color;
+          overflow: hidden;
+          background: #08090a;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+
+          .remove-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 74, 90, 0.4);
+            color: $danger-color;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
+
+            &:hover {
+              background: $danger-color;
+              color: #ffffff;
+            }
+          }
+        }
+      }
+    }
+
+    .form-submit-btn {
+      @include cyber-btn-primary;
+      padding: 1rem;
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+    }
+  }
+
+  // Right Column: Live HUD Preview
+  .preview-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: sticky;
+    top: 90px;
+
+    .preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .preview-label {
+        font-family: $font-mono;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: $text-secondary;
+      }
+
+      .preview-live-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-family: $font-mono;
+        font-size: 0.68rem;
+        color: $accent-color;
+
+        .live-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: $accent-color;
+          box-shadow: 0 0 6px $accent-color;
+        }
+      }
+    }
+
+    .preview-card-wrapper {
+      max-width: 360px;
+      width: 100%;
+
+      @include tablet {
+        max-width: 100%;
+      }
+    }
+  }
+}
