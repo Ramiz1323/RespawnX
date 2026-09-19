@@ -15,7 +15,7 @@ import {
 import "../styles/Cart.scss";
 
 export const Cart = () => {
-  const { handleAddItem, handleGetCart, handleIncrementCartItem } = useCart();
+  const { handleAddItem, handleGetCart, handleIncrementCartItem, handleDecrementCartItem } = useCart();
   const cartState = useSelector((state) => state.cart) || { items: [], loading: false, error: null };
   const items = cartState.items || [];
   const loading = cartState.loading || false;
@@ -59,6 +59,20 @@ export const Cart = () => {
     } catch (err) {
       console.error("Failed to increment quantity:", err);
       setActionFeedback(err?.response?.data?.message || "Could not increment quantity.");
+      setTimeout(() => setActionFeedback(""), 4000);
+    } finally {
+      setUpdatingItemId(null);
+    }
+  };
+
+  const handleDecrement = async ({ productId, variantId }) => {
+    setUpdatingItemId(`${productId}_${variantId}`);
+    setActionFeedback("");
+    try {
+      await handleDecrementCartItem({ productId, variantId });
+    } catch (err) {
+      console.error("Failed to decrement quantity:", err);
+      setActionFeedback(err?.response?.data?.message || "Could not decrement quantity.");
       setTimeout(() => setActionFeedback(""), 4000);
     } finally {
       setUpdatingItemId(null);
@@ -176,6 +190,7 @@ export const Cart = () => {
                     key={itemKey}
                     item={item}
                     onIncrement={handleIncrement}
+                    onDecrement={handleDecrement}
                     isUpdating={updatingItemId === itemKey}
                   />
                 );

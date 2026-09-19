@@ -58,6 +58,20 @@ export const PlusIcon = ({ size = 18, style = {}, className = "", ...props }) =>
   </svg>
 );
 
+export const MinusIcon = ({ size = 18, style = {}, className = "", ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={2}
+    stroke="currentColor"
+    {...createSvgProps(size, style, className)}
+    {...props}
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
+  </svg>
+);
+
 export const TrashIcon = ({ size = 16, style = {}, className = "", ...props }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"

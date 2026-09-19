@@ -22,3 +22,8 @@ export const incrementCartItemAPI = async ({ productId, variantId }) => {
     const response = await cartApiInstance.post(`/quantity/increment/${productId}/${variantId}`);
     return response.data;
 }
+
+export const decrementCartItemAPI = async ({ productId, variantId }) => {
+    const response = await cartApiInstance.post(`/quantity/decrement/${productId}/${variantId}`);
+    return response.data;
+}

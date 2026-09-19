@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router";
-import { HardwareIcon, PlusIcon, BoltIcon } from "../../products/components/Icons";
+import { HardwareIcon, PlusIcon, MinusIcon, TrashIcon } from "../../products/components/Icons";
 import { formatCurrency } from "../../products/components/ProductCard";
 
-export const CartItem = ({ item, onIncrement, isUpdating }) => {
+export const CartItem = ({ item, onIncrement, onDecrement, isUpdating }) => {
   if (!item) return null;
 
   const product = typeof item.product === "object" ? item.product : null;
@@ -90,15 +90,24 @@ export const CartItem = ({ item, onIncrement, isUpdating }) => {
         <div className="qty-control-group">
           <span className="qty-label">UNITS:</span>
           <div className="qty-pill">
+            <button
+              type="button"
+              className={`qty-btn qty-dec-btn ${quantity <= 1 ? "is-remove" : ""}`}
+              title={quantity <= 1 ? "Remove item from loadout" : "Decrease quantity by 1"}
+              disabled={isUpdating}
+              onClick={() => onDecrement && onDecrement({ productId, variantId })}
+            >
+              {quantity <= 1 ? <TrashIcon size={12} /> : <MinusIcon size={12} />}
+            </button>
             <span className="qty-count">{quantity}</span>
             <button
               type="button"
-              className="qty-inc-btn"
+              className="qty-btn qty-inc-btn"
               title={isMaxStock ? "Max stock reached" : "Add 1 more unit"}
               disabled={isMaxStock || isUpdating}
               onClick={() => onIncrement && onIncrement({ productId, variantId })}
             >
-              <PlusIcon size={14} />
+              <PlusIcon size={12} />
             </button>
           </div>
         </div>
