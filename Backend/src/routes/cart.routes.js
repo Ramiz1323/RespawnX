@@ -31,6 +31,6 @@ router.get('/', getCart);
  * @argument productId - ID of the product to be incremented in the cart
  * @argument variantId - ID of the variant of the product to be incremented in the cart
  */
-router.post('/increment/:productId/:variantId', validateIncrementCartItemQuantity, incrementCartItemQuantity);
+router.post('/quantity/increment/:productId/:variantId', validateIncrementCartItemQuantity, incrementCartItemQuantity);
 
 export default router;
