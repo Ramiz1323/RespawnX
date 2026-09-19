@@ -24,15 +24,17 @@ const cartSlice = createSlice({
             const { productId, variantId } = action.payload;
 
             state.items = state.items.map(item => {
-                if (item.product._id === productId && item.variant === variantId) {
+                const itemProductId = item.product?._id ? String(item.product._id) : String(item.product);
+                const itemVariantId = item.variant?._id ? String(item.variant._id) : String(item.variant);
+                if (itemProductId === String(productId) && itemVariantId === String(variantId)) {
                     return {
                         ...item,
-                        quantity: item.quantity + 1
-                    }
+                        quantity: (Number(item.quantity) || 0) + 1
+                    };
                 } else {
                     return item;
                 }
-            })
+            });
         }
     }
 })

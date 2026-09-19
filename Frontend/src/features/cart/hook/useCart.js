@@ -34,9 +34,17 @@ export const useCart = () => {
     }
 
     async function handleIncrementCartItem({ productId, variantId }) {
-        const data = await incrementCartItemAPI({ productId, variantId });
-        dispatch(incrementCartItem({ productId, variantId }));
-        return data;
+        dispatch(setLoading(true));
+        try {
+            const data = await incrementCartItemAPI({ productId, variantId });
+            dispatch(incrementCartItem({ productId, variantId }));
+            return data;
+        } catch (err) {
+            dispatch(setError(err?.response?.data?.message || err.message));
+            throw err;
+        } finally {
+            dispatch(setLoading(false));
+        }
     }
 
     return {
