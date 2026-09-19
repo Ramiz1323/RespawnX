@@ -117,6 +117,67 @@
     align-items: center;
     gap: 0.85rem;
 
+    .cart-nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid $border-color;
+      color: $text-secondary;
+      padding: 0.45rem 0.85rem;
+      border-radius: $radius-sm;
+      font-family: $font-sans;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all $transition-fast;
+
+      .cart-icon-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .cart-badge-count {
+          position: absolute;
+          top: -8px;
+          right: -10px;
+          background: $accent-color;
+          color: #000000;
+          font-family: $font-mono;
+          font-size: 0.65rem;
+          font-weight: 800;
+          line-height: 1;
+          padding: 0.2rem 0.35rem;
+          border-radius: 999px;
+          min-width: 16px;
+          text-align: center;
+          box-shadow: 0 0 10px rgba(0, 229, 163, 0.6);
+        }
+      }
+
+      .cart-btn-label {
+        letter-spacing: 0.04em;
+        @include mobile {
+          display: none;
+        }
+      }
+
+      &:hover {
+        color: $accent-color;
+        border-color: rgba(0, 229, 163, 0.4);
+        background: $accent-dim;
+        box-shadow: $glow-accent;
+      }
+
+      &.active {
+        color: $accent-color;
+        background: $accent-dim;
+        border-color: $accent-color;
+        box-shadow: $glow-accent;
+      }
+    }
+
     .deploy-btn {
       @include cyber-btn-primary;
       padding: 0.55rem 1rem;

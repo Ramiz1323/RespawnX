@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useParams, Link } from "react-router";
 import { useSelector } from "react-redux";
 import { useProduct } from "../hooks/useProduct";
+import { useCart } from "../../cart/hook/useCart";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { formatCurrency } from "../components/ProductCard";
@@ -12,12 +13,14 @@ import {
   CpuIcon,
   HardwareIcon,
   LayersIcon,
+  CartIcon,
 } from "../components/Icons";
 import "../styles/ProductDetail.scss";
 
 export const ProductDetail = () => {
   const { id } = useParams();
   const { handleGetProductById } = useProduct();
+  const { handleAddItem } = useCart();
   const user = useSelector((state) => state.auth?.user);
 
   const [product, setProduct] = useState(null);
@@ -25,6 +28,8 @@ export const ProductDetail = () => {
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [acquiredMessage, setAcquiredMessage] = useState(false);
+  const [acquireError, setAcquireError] = useState("");
+  const [isAdding, setIsAdding] = useState(false);
   const [fetchError, setFetchError] = useState("");
 
   useEffect(() => {
@@ -92,9 +97,33 @@ export const ProductDetail = () => {
     return sellerId === currentUserId;
   }, [user, product]);
 
-  const handleAcquire = () => {
-    setAcquiredMessage(true);
-    setTimeout(() => setAcquiredMessage(false), 3000);
+  const handleAcquire = async () => {
+    if (!product || !activeVariant) {
+      setAcquireError("Please select a valid hardware configuration.");
+      return;
+    }
+
+    const productId = product._id || product.id;
+    const variantId = activeVariant._id || activeVariant.id;
+
+    setIsAdding(true);
+    setAcquireError("");
+    try {
+      await handleAddItem({ productId, variantId, quantity: 1 });
+      setAcquiredMessage(true);
+      setTimeout(() => setAcquiredMessage(false), 5000);
+    } catch (err) {
+      console.error("Failed to acquire hardware:", err);
+      const msg =
+        err?.response?.data?.message ||
+        (err?.response?.status === 401
+          ? "Authentication required. Please sign in to acquire hardware."
+          : "Failed to queue hardware to cart.");
+      setAcquireError(msg);
+      setTimeout(() => setAcquireError(""), 5000);
+    } finally {
+      setIsAdding(false);
+    }
   };
 
   if (loading) {
@@ -341,14 +370,53 @@ export const ProductDetail = () => {
                     background: "rgba(0, 229, 163, 0.15)",
                     border: "1px solid #00e5a3",
                     color: "#00e5a3",
-                    padding: "0.75rem",
+                    padding: "0.85rem 1rem",
                     borderRadius: "4px",
                     fontFamily: "'JetBrains Mono', monospace",
                     fontSize: "0.85rem",
-                    textAlign: "center",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    flexWrap: "wrap",
+                    gap: "0.75rem",
                   }}
                 >
-                  &gt; [SUCCESS] HARDWARE ACQUIRED TO BATTLESTATION LOADOUT!
+                  <span>&gt; [SUCCESS] HARDWARE ACQUIRED TO BATTLESTATION LOADOUT!</span>
+                  <Link
+                    to="/cart"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.35rem",
+                      background: "#00e5a3",
+                      color: "#000000",
+                      fontWeight: 700,
+                      padding: "0.35rem 0.85rem",
+                      borderRadius: "3px",
+                      textDecoration: "none",
+                      fontSize: "0.75rem",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    <CartIcon size={14} />
+                    <span>View Loadout &rarr;</span>
+                  </Link>
+                </div>
+              )}
+
+              {acquireError && (
+                <div
+                  style={{
+                    background: "rgba(255, 74, 90, 0.15)",
+                    border: "1px solid #ff4a5a",
+                    color: "#ff4a5a",
+                    padding: "0.75rem 1rem",
+                    borderRadius: "4px",
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: "0.85rem",
+                  }}
+                >
+                  &gt; [ALERT] {acquireError}
                 </div>
               )}
 
@@ -357,15 +425,21 @@ export const ProductDetail = () => {
                   type="button"
                   className="btn-acquire"
                   onClick={handleAcquire}
-                  disabled={currentStock <= 0}
+                  disabled={currentStock <= 0 || isAdding}
                 >
                   <BoltIcon size={18} />
-                  <span>{currentStock > 0 ? "Acquire Hardware" : "Out of Stock"}</span>
+                  <span>
+                    {isAdding
+                      ? "Arming Loadout..."
+                      : currentStock > 0
+                      ? "Acquire Hardware"
+                      : "Out of Stock"}
+                  </span>
                 </button>
 
-                <button type="button" className="btn-loadout" onClick={handleAcquire}>
-                  Save to Rig
-                </button>
+                <Link to="/cart" className="btn-loadout" style={{ textAlign: "center" }}>
+                  View Cart
+                </Link>
               </div>
 
               {/* Seller Direct Link if user owns product or is seller */}

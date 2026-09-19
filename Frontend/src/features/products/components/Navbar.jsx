@@ -2,12 +2,17 @@ import React from "react";
 import { Link, useLocation } from "react-router";
 import { useSelector } from "react-redux";
 import { useAuth } from "../../auth/hook/useAuth";
-import { BrandLogoIcon, PlusIcon } from "./Icons";
+import { BrandLogoIcon, PlusIcon, CartIcon } from "./Icons";
 import "../styles/Navbar.scss";
 
 export const Navbar = () => {
   const location = useLocation();
   const user = useSelector((state) => state.auth?.user);
+  const cartItems = useSelector((state) => state.cart?.items || []);
+  const totalCartCount = cartItems.reduce(
+    (acc, item) => acc + (Number(item?.quantity) || 0),
+    0
+  );
   const { handleLogout } = useAuth();
 
   const isActive = (path) => location.pathname === path;
@@ -45,6 +50,20 @@ export const Navbar = () => {
 
         {/* Actions */}
         <div className="nav-actions">
+          <Link
+            to="/cart"
+            className={`cart-nav-btn ${isActive("/cart") ? "active" : ""}`}
+            title="Battle Station Loadout / Cart"
+          >
+            <div className="cart-icon-wrapper">
+              <CartIcon size={18} />
+              {totalCartCount > 0 && (
+                <span className="cart-badge-count">{totalCartCount}</span>
+              )}
+            </div>
+            <span className="cart-btn-label">Loadout</span>
+          </Link>
+
           <Link to="/products/create" className="deploy-btn">
             <PlusIcon size={16} />
             <span>Deploy Gear</span>
