@@ -128,7 +128,7 @@ const Register = () => {
         </div>
 
         {errorMessage && (
-          <div style={{ color: "#ff4a5a", fontSize: "0.85rem", marginBottom: "1.25rem", fontFamily: "monospace" }}>
+          <div className="auth-error-alert">
             &gt; ERROR: {errorMessage}
           </div>
         )}

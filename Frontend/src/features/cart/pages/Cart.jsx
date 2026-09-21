@@ -119,15 +119,8 @@ export const Cart = () => {
             <span>[WARNING] {actionFeedback || error}</span>
             <button
               type="button"
+              className="alert-close-btn"
               onClick={() => setActionFeedback("")}
-              style={{
-                background: "transparent",
-                border: "none",
-                color: "inherit",
-                cursor: "pointer",
-                fontFamily: "inherit",
-                fontSize: "1rem",
-              }}
             >
               ✕
             </button>
@@ -136,38 +129,11 @@ export const Cart = () => {
 
         {/* Guest Warning if not logged in */}
         {!user && (
-          <div
-            style={{
-              background: "rgba(245, 158, 11, 0.1)",
-              border: "1px solid rgba(245, 158, 11, 0.3)",
-              color: "#f59e0b",
-              padding: "1rem 1.5rem",
-              borderRadius: "4px",
-              marginBottom: "2rem",
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: "0.85rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              gap: "1rem",
-            }}
-          >
+          <div className="guest-auth-banner">
             <span>
               &gt; OPERATOR NOT AUTHENTICATED. PLEASE CONNECT SESSION TO SYNC CLOUD LOADOUT.
             </span>
-            <Link
-              to="/login"
-              style={{
-                background: "#f59e0b",
-                color: "#000000",
-                fontWeight: 700,
-                padding: "0.4rem 0.9rem",
-                borderRadius: "3px",
-                textDecoration: "none",
-                fontSize: "0.78rem",
-              }}
-            >
+            <Link to="/login" className="btn-auth-sync">
               SIGN IN &rarr;
             </Link>
           </div>

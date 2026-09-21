@@ -86,6 +86,13 @@
   }
 }
 
+.auth-error-alert {
+  color: $danger-color;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  font-family: $font-mono;
+}
+
 .login-form {
   @include flex-column;
   gap: 1.5rem;
