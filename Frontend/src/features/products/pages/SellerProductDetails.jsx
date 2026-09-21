@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams, Link } from "react-router";
 import { useProduct } from "../hooks/useProduct";
 import Navbar from "../components/Navbar";
@@ -59,6 +59,46 @@ export const SellerProductDetails = () => {
   useEffect(() => {
     fetchProduct();
   }, [id]);
+
+  // Aggregate base configuration and added variants
+  const allConfigurations = useMemo(() => {
+    if (!product) return [];
+    const list = [];
+
+    const hasBaseImages = product.images && product.images.length > 0;
+    const hasBasePrice = product.price && product.price.amount !== undefined;
+    const isBaseInVariants = (product.variants || []).some(
+      (v) => v.images?.[0]?.url && v.images[0].url === product.images?.[0]?.url
+    );
+
+    let baseLabel = "Base Specification";
+    const textToCheck = ((product.title || "") + " " + (product.description || "")).toLowerCase();
+    if (textToCheck.includes("white")) baseLabel = "Color: White";
+    else if (textToCheck.includes("black")) baseLabel = "Color: Black";
+    else if (textToCheck.includes("silver")) baseLabel = "Color: Silver";
+    else if (textToCheck.includes("grey") || textToCheck.includes("gray")) baseLabel = "Color: Grey";
+
+    if ((hasBaseImages || hasBasePrice) && !isBaseInVariants) {
+      list.push({
+        isBase: true,
+        displayName: baseLabel,
+        images: product.images || [],
+        price: product.price,
+        stock: 10,
+        attributes: { spec: baseLabel },
+      });
+    }
+
+    if (product.variants && product.variants.length > 0) {
+      product.variants.forEach((v) => list.push({ ...v, isBase: false }));
+    }
+
+    return list;
+  }, [product]);
+
+  const thumbUrl = useMemo(() => {
+    return product?.images?.[0]?.url || product?.variants?.[0]?.images?.[0]?.url || "";
+  }, [product]);
 
   // Attribute builder functions
   const handleAddAttributeRow = () => {
@@ -153,7 +193,7 @@ export const SellerProductDetails = () => {
     return (
       <div className="seller-details-page">
         <Navbar />
-        <div style={{ padding: "6rem", textAlign: "center", color: "#00e5a3", fontFamily: "'JetBrains Mono', monospace" }}>
+        <div className="seller-loading-state">
           &gt; QUERYING HARDWARE VARIANT TERMINAL FROM BACKEND...
         </div>
         <Footer />
@@ -165,27 +205,11 @@ export const SellerProductDetails = () => {
     return (
       <div className="seller-details-page">
         <Navbar />
-        <div className="seller-details-container" style={{ textAlign: "center", padding: "6rem 1.5rem" }}>
-          <HardwareIcon size={44} style={{ color: "#ff4a5a", margin: "0 auto 1rem" }} />
-          <h2 style={{ fontSize: "1.8rem", color: "#ffffff" }}>Hardware Not Found</h2>
-          <p style={{ color: "#8e95a5", marginTop: "0.5rem" }}>{fetchError || "Hardware record not found in database."}</p>
-          <Link
-            to="/seller/dashboard"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              background: "#00e5a3",
-              color: "#000000",
-              fontWeight: "700",
-              padding: "0.75rem 1.5rem",
-              borderRadius: "4px",
-              marginTop: "1.5rem",
-              textDecoration: "none",
-              textTransform: "uppercase",
-              fontSize: "0.85rem",
-            }}
-          >
+        <div className="seller-details-container error-state">
+          <HardwareIcon size={44} className="error-icon" />
+          <h2 className="error-title">Hardware Not Found</h2>
+          <p className="error-desc">{fetchError || "Hardware record not found in database."}</p>
+          <Link to="/seller/dashboard" className="btn-return-deck">
             <ArrowLeftIcon size={16} />
             <span>Return to Command Deck</span>
           </Link>
@@ -194,8 +218,6 @@ export const SellerProductDetails = () => {
       </div>
     );
   }
-
-  const thumbUrl = product?.images?.[0]?.url || product?.variants?.[0]?.images?.[0]?.url;
 
   return (
     <div className="seller-details-page">
@@ -250,21 +272,7 @@ export const SellerProductDetails = () => {
             </div>
 
             {alertStatus.message && (
-              <div
-                style={{
-                  padding: "0.85rem",
-                  borderRadius: "4px",
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: "0.8rem",
-                  background:
-                    alertStatus.type === "error" ? "rgba(255, 74, 90, 0.15)" : "rgba(0, 229, 163, 0.15)",
-                  color: alertStatus.type === "error" ? "#ff4a5a" : "#00e5a3",
-                  border:
-                    alertStatus.type === "error"
-                      ? "1px solid rgba(255, 74, 90, 0.4)"
-                      : "1px solid rgba(0, 229, 163, 0.4)",
-                }}
-              >
+              <div className={`variant-alert-box ${alertStatus.type === "error" ? "error" : "success"}`}>
                 &gt; {alertStatus.type === "error" ? "ERROR: " : "SUCCESS: "}
                 {alertStatus.message}
               </div>
@@ -333,19 +341,17 @@ export const SellerProductDetails = () => {
                     <div key={idx} className="attr-row">
                       <input
                         type="text"
-                        className="input"
+                        className="input attr-input"
                         placeholder="Key (e.g. switch)"
                         value={row.key}
                         onChange={(e) => handleAttributeChange(idx, "key", e.target.value)}
-                        style={{ height: "36px", fontSize: "0.82rem" }}
                       />
                       <input
                         type="text"
-                        className="input"
+                        className="input attr-input"
                         placeholder="Value (e.g. Linear Red)"
                         value={row.value}
                         onChange={(e) => handleAttributeChange(idx, "value", e.target.value)}
-                        style={{ height: "36px", fontSize: "0.82rem" }}
                       />
                       <button
                         type="button"
@@ -362,14 +368,17 @@ export const SellerProductDetails = () => {
 
               {/* Variant Images Upload */}
               <div className="variant-upload">
-                <span className="label">Variant Captures (Optional)</span>
+                <span className="label">Variant Showcase Visuals</span>
+                <p className="upload-hint">
+                  Upload angle and detail captures specific to this configuration (e.g., this specific color/switch finish).
+                </p>
                 <label className="upload-box">
                   <span className="upload-text">Click to attach variant visual captures</span>
                   <input
                     type="file"
                     accept="image/*"
                     multiple
-                    style={{ display: "none" }}
+                    className="file-input-hidden"
                     onChange={handleImageSelect}
                   />
                 </label>
@@ -405,14 +414,15 @@ export const SellerProductDetails = () => {
             <div className="panel-header">
               <h2 className="title">
                 Existing Hardware Configurations
-                <span className="count-tag">{product?.variants?.length || 0} TOTAL</span>
+                <span className="count-tag">{allConfigurations.length} TOTAL</span>
               </h2>
             </div>
 
-            {product?.variants && product.variants.length > 0 ? (
+            {allConfigurations.length > 0 ? (
               <div className="variants-container">
-                {product.variants.map((v, idx) => {
-                  const imgUrl = v.images?.[0]?.url;
+                {allConfigurations.map((v, idx) => {
+                  const variantImgs = v.images && v.images.length > 0 ? v.images : [];
+                  const primaryImg = variantImgs[0]?.url;
                   const attrs =
                     typeof v.attributes === "string"
                       ? JSON.parse(v.attributes || "{}")
@@ -421,8 +431,15 @@ export const SellerProductDetails = () => {
                   return (
                     <div key={idx} className="variant-item-card">
                       <div className="variant-left">
-                        {imgUrl ? (
-                          <img src={imgUrl} alt="" className="variant-img" />
+                        {primaryImg ? (
+                          <div className="variant-images-group">
+                            <img src={primaryImg} alt="" className="variant-img" />
+                            {variantImgs.length > 1 && (
+                              <span className="variant-img-count">
+                                +{variantImgs.length - 1} angles
+                              </span>
+                            )}
+                          </div>
                         ) : (
                           <div className="variant-img-placeholder">
                             <LayersIcon size={22} />
@@ -431,6 +448,11 @@ export const SellerProductDetails = () => {
 
                         <div className="variant-specs">
                           <div className="attr-pills">
+                            {v.isBase && (
+                              <span className="attr-pill base-model">
+                                BASE MODEL
+                              </span>
+                            )}
                             {Object.entries(attrs).map(([k, val]) => (
                               <span key={k} className="attr-pill">
                                 <strong>{k}:</strong> {String(val)}

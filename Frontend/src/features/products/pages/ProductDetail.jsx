@@ -60,31 +60,74 @@ export const ProductDetail = () => {
     };
   }, [id]);
 
-  // Aggregate all images (product base images + variant images)
-  const allImages = useMemo(() => {
+  // Aggregate base product model and any extra deployed variants
+  const allVariants = useMemo(() => {
     if (!product) return [];
-    const imgs = [];
-    if (product.images && product.images.length > 0) {
-      product.images.forEach((img) => {
-        if (img?.url && !imgs.includes(img.url)) imgs.push(img.url);
+
+    const list = [];
+    const hasBaseImages = product.images && product.images.length > 0;
+    const hasBasePrice = product.price && product.price.amount !== undefined;
+    const isBaseInVariants = (product.variants || []).some(
+      (v) => v.images?.[0]?.url && v.images[0].url === product.images?.[0]?.url
+    );
+
+    // Intelligently infer color/edition from product title/description if available
+    let baseLabel = "Standard Spec";
+    const textToCheck = ((product.title || "") + " " + (product.description || "")).toLowerCase();
+    if (textToCheck.includes("white")) baseLabel = "Color: White";
+    else if (textToCheck.includes("black")) baseLabel = "Color: Black";
+    else if (textToCheck.includes("silver")) baseLabel = "Color: Silver";
+    else if (textToCheck.includes("grey") || textToCheck.includes("gray")) baseLabel = "Color: Grey";
+
+    if ((hasBaseImages || hasBasePrice) && !isBaseInVariants) {
+      list.push({
+        _id: product.variants?.[0]?._id || product._id || product.id,
+        isBase: true,
+        displayName: baseLabel,
+        attributes: { [baseLabel.includes(":") ? baseLabel.split(":")[0].trim() : "spec"]: baseLabel.includes(":") ? baseLabel.split(":")[1].trim() : baseLabel },
+        images: product.images || [],
+        price: product.price,
+        stock: 10,
       });
     }
+
     if (product.variants && product.variants.length > 0) {
       product.variants.forEach((v) => {
-        if (v.images && v.images.length > 0) {
-          v.images.forEach((img) => {
-            if (img?.url && !imgs.includes(img.url)) imgs.push(img.url);
-          });
-        }
+        list.push({
+          ...v,
+          isBase: false,
+        });
       });
     }
-    return imgs;
+
+    return list;
   }, [product]);
 
   const activeVariant = useMemo(() => {
-    if (!product?.variants || product.variants.length === 0) return null;
-    return product.variants[selectedVariantIndex] || product.variants[0];
-  }, [product, selectedVariantIndex]);
+    if (allVariants.length === 0) return null;
+    return allVariants[selectedVariantIndex] || allVariants[0];
+  }, [allVariants, selectedVariantIndex]);
+
+  const currentImages = useMemo(() => {
+    if (!product) return [];
+    
+    if (activeVariant?.images && activeVariant.images.length > 0) {
+      const vImgs = activeVariant.images.map((img) => img?.url).filter(Boolean);
+      if (vImgs.length > 0) return vImgs;
+    }
+
+    if (product.images && product.images.length > 0) {
+      const baseImgs = product.images.map((img) => img?.url).filter(Boolean);
+      if (baseImgs.length > 0) return baseImgs;
+    }
+
+    return [];
+  }, [product, activeVariant]);
+
+  const handleSelectVariant = (index) => {
+    setSelectedVariantIndex(index);
+    setActiveImageIndex(0);
+  };
 
   const currentPrice = activeVariant?.price?.amount ?? product?.price?.amount ?? 0;
   const currentCurrency = activeVariant?.price?.currency ?? product?.price?.currency ?? "INR";
@@ -130,7 +173,7 @@ export const ProductDetail = () => {
     return (
       <div className="product-detail-page">
         <Navbar />
-        <div style={{ textAlign: "center", padding: "6rem 1.5rem", color: "#00e5a3", fontFamily: "'JetBrains Mono', monospace" }}>
+        <div className="detail-loading-state">
           &gt; QUERYING HARDWARE TELEMETRY FROM BACKEND...
         </div>
         <Footer />
@@ -142,31 +185,15 @@ export const ProductDetail = () => {
     return (
       <div className="product-detail-page">
         <Navbar />
-        <div className="detail-container" style={{ textAlign: "center", padding: "6rem 1.5rem" }}>
-          <HardwareIcon size={48} style={{ color: "#ff4a5a", margin: "0 auto 1.5rem" }} />
-          <h2 style={{ fontSize: "1.8rem", fontWeight: "800", color: "#ffffff" }}>
+        <div className="detail-container error-state">
+          <HardwareIcon size={48} className="error-icon" />
+          <h2 className="error-title">
             Hardware Module Not Found
           </h2>
-          <p style={{ color: "#8e95a5", marginTop: "0.75rem", fontSize: "0.95rem" }}>
+          <p className="error-desc">
             {fetchError || "The requested hardware sector ID is not registered in the database."}
           </p>
-          <Link
-            to="/"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              background: "#00e5a3",
-              color: "#000000",
-              fontWeight: "700",
-              padding: "0.75rem 1.5rem",
-              borderRadius: "4px",
-              marginTop: "1.5rem",
-              textDecoration: "none",
-              textTransform: "uppercase",
-              fontSize: "0.85rem",
-            }}
-          >
+          <Link to="/" className="btn-return-catalog">
             <ArrowLeftIcon size={16} />
             <span>Return to Store Catalog</span>
           </Link>
@@ -195,9 +222,9 @@ export const ProductDetail = () => {
           {/* Left: Gallery Viewport */}
           <div className="detail-gallery">
             <div className="main-viewport">
-              {allImages.length > 0 ? (
+              {currentImages.length > 0 ? (
                 <img
-                  src={allImages[activeImageIndex] || allImages[0]}
+                  src={currentImages[activeImageIndex] || currentImages[0]}
                   alt={product.title}
                   className="main-img"
                 />
@@ -209,27 +236,16 @@ export const ProductDetail = () => {
               )}
 
               <div className="gallery-badge">
-                <span
-                  style={{
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: "0.72rem",
-                    color: "#00e5a3",
-                    background: "rgba(0, 0, 0, 0.75)",
-                    border: "1px solid rgba(0, 229, 163, 0.3)",
-                    padding: "0.25rem 0.6rem",
-                    borderRadius: "4px",
-                    backdropFilter: "blur(8px)",
-                  }}
-                >
-                  OPTIC VIEW // {allImages.length > 0 ? activeImageIndex + 1 : 0} OF {allImages.length}
+                <span className="optic-badge">
+                  OPTIC VIEW // {currentImages.length > 0 ? (activeImageIndex < currentImages.length ? activeImageIndex + 1 : 1) : 0} OF {currentImages.length}
                 </span>
               </div>
             </div>
 
-            {/* Thumbnails Row */}
-            {allImages.length > 1 && (
+            {/* Thumbnails Row - Shows ONLY images of the currently active variant */}
+            {currentImages.length > 1 && (
               <div className="thumbnail-reel">
-                {allImages.map((imgUrl, idx) => (
+                {currentImages.map((imgUrl, idx) => (
                   <button
                     key={idx}
                     type="button"
@@ -250,17 +266,7 @@ export const ProductDetail = () => {
                 <span className="seller-pill">
                   SECTOR ID: <span>#{String(product._id || product.id).slice(-6).toUpperCase()}</span>
                 </span>
-                <span
-                  style={{
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: "0.72rem",
-                    color: "#00e5a3",
-                    background: "rgba(0, 229, 163, 0.1)",
-                    border: "1px solid rgba(0, 229, 163, 0.3)",
-                    padding: "0.2rem 0.6rem",
-                    borderRadius: "4px",
-                  }}
-                >
+                <span className="verified-pill">
                   VERIFIED HARDWARE
                 </span>
               </div>
@@ -285,39 +291,54 @@ export const ProductDetail = () => {
               </div>
             </div>
 
-            {/* Variants Selector */}
-            {product.variants && product.variants.length > 0 && (
+            {/* Amazon-Style Hardware Variants Selector */}
+            {allVariants && allVariants.length > 1 && (
               <div className="variants-section">
                 <div className="section-heading">
                   <span>Select Hardware Variant</span>
-                  <span>{product.variants.length} Configurations</span>
+                  <span>{allVariants.length} Configurations</span>
                 </div>
 
                 <div className="variants-grid">
-                  {product.variants.map((variant, idx) => {
-                    let label = `Variant #${idx + 1}`;
-                    if (variant.attributes) {
+                  {allVariants.map((variant, idx) => {
+                    let label = variant.displayName || `Variant #${idx + 1}`;
+                    let subLabel = "";
+                    if (!variant.displayName && variant.attributes) {
                       const attrs =
                         typeof variant.attributes === "string"
                           ? JSON.parse(variant.attributes || "{}")
                           : variant.attributes;
-                      const keys = Object.keys(attrs);
-                      if (keys.length > 0) {
-                        label = `${keys[0]}: ${attrs[keys[0]]}`;
+                      const entries = Object.entries(attrs);
+                      if (entries.length > 0) {
+                        label = `${entries[0][0]}: ${entries[0][1]}`;
+                        if (entries.length > 1) {
+                          subLabel = entries.slice(1).map(([k, v]) => `${k}: ${v}`).join(", ");
+                        }
                       }
                     }
 
+                    const variantThumb = variant.images?.[0]?.url;
+
                     return (
-                      <div
+                      <button
                         key={idx}
+                        type="button"
                         className={`variant-tile ${selectedVariantIndex === idx ? "active" : ""}`}
-                        onClick={() => setSelectedVariantIndex(idx)}
+                        onClick={() => handleSelectVariant(idx)}
                       >
-                        <span className="variant-name">{label}</span>
-                        <span className="variant-price">
-                          {formatCurrency(variant.price?.amount || currentPrice, variant.price?.currency || currentCurrency)}
-                        </span>
-                      </div>
+                        {variantThumb && (
+                          <div className="variant-swatch-thumb">
+                            <img src={variantThumb} alt={label} />
+                          </div>
+                        )}
+                        <div className="variant-tile-body">
+                          <span className="variant-name">{label}</span>
+                          {subLabel && <span className="variant-subname">{subLabel}</span>}
+                          <span className="variant-price">
+                            {formatCurrency(variant.price?.amount || currentPrice, variant.price?.currency || currentCurrency)}
+                          </span>
+                        </div>
+                      </button>
                     );
                   })}
                 </div>
@@ -365,39 +386,9 @@ export const ProductDetail = () => {
             {/* Actions HUD */}
             <div className="actions-hud">
               {acquiredMessage && (
-                <div
-                  style={{
-                    background: "rgba(0, 229, 163, 0.15)",
-                    border: "1px solid #00e5a3",
-                    color: "#00e5a3",
-                    padding: "0.85rem 1rem",
-                    borderRadius: "4px",
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: "0.85rem",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    flexWrap: "wrap",
-                    gap: "0.75rem",
-                  }}
-                >
+                <div className="alert-banner-success">
                   <span>&gt; [SUCCESS] HARDWARE ACQUIRED TO BATTLESTATION LOADOUT!</span>
-                  <Link
-                    to="/cart"
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "0.35rem",
-                      background: "#00e5a3",
-                      color: "#000000",
-                      fontWeight: 700,
-                      padding: "0.35rem 0.85rem",
-                      borderRadius: "3px",
-                      textDecoration: "none",
-                      fontSize: "0.75rem",
-                      textTransform: "uppercase",
-                    }}
-                  >
+                  <Link to="/cart" className="btn-view-loadout">
                     <CartIcon size={14} />
                     <span>View Loadout &rarr;</span>
                   </Link>
@@ -405,17 +396,7 @@ export const ProductDetail = () => {
               )}
 
               {acquireError && (
-                <div
-                  style={{
-                    background: "rgba(255, 74, 90, 0.15)",
-                    border: "1px solid #ff4a5a",
-                    color: "#ff4a5a",
-                    padding: "0.75rem 1rem",
-                    borderRadius: "4px",
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: "0.85rem",
-                  }}
-                >
+                <div className="alert-banner-error">
                   &gt; [ALERT] {acquireError}
                 </div>
               )}
@@ -437,7 +418,7 @@ export const ProductDetail = () => {
                   </span>
                 </button>
 
-                <Link to="/cart" className="btn-loadout" style={{ textAlign: "center" }}>
+                <Link to="/cart" className="btn-loadout">
                   View Cart
                 </Link>
               </div>
