@@ -194,7 +194,7 @@ export const Home = () => {
 
         {/* Products Grid */}
         {loading ? (
-          <div style={{ textAlign: "center", padding: "5rem 1.5rem", color: "#00e5a3", fontFamily: "'JetBrains Mono', monospace" }}>
+          <div className="home-loading-state">
             &gt; INITIALIZING SECTOR SCAN FROM BACKEND...
           </div>
         ) : filteredProducts.length > 0 ? (
@@ -228,7 +228,7 @@ export const Home = () => {
                 Reset Filters
               </button>
             ) : (
-              <Link to="/products/create" className="reset-btn" style={{ textDecoration: "none" }}>
+              <Link to="/products/create" className="reset-btn">
                 + Deploy First Hardware Model
               </Link>
             )}

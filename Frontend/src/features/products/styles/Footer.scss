@@ -56,6 +56,10 @@
       color: $text-primary;
       text-decoration: none;
 
+      .logo-icon {
+        color: $accent-color;
+      }
+
       span {
         color: $accent-color;
       }

@@ -140,7 +140,7 @@ export const Dashboard = () => {
               <span className="card-label">Grid Health</span>
               <ShieldCheckIcon size={22} className="card-icon" />
             </div>
-            <span className="card-value" style={{ color: "#00e5a3" }}>
+            <span className="card-value optimal-health">
               OPTIMAL
             </span>
             <span className="card-trend">&gt; AES-256 Synchronized</span>
@@ -169,7 +169,7 @@ export const Dashboard = () => {
 
           <div className="table-container">
             {loading ? (
-              <div style={{ padding: "4rem", textAlign: "center", color: "#00e5a3", fontFamily: "'JetBrains Mono', monospace" }}>
+              <div className="dashboard-loading-state">
                 &gt; POLLING SELLER INVENTORY TELEMETRY FROM BACKEND...
               </div>
             ) : filteredListings.length > 0 ? (
@@ -180,7 +180,7 @@ export const Dashboard = () => {
                     <th>Base Price</th>
                     <th>Configurations</th>
                     <th>Timestamp</th>
-                    <th style={{ textAlign: "right" }}>Actions</th>
+                    <th className="th-actions">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -222,12 +222,12 @@ export const Dashboard = () => {
                           </span>
                         </td>
 
-                        <td style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.78rem" }}>
+                        <td className="timestamp-cell">
                           {dateStr}
                         </td>
 
                         <td>
-                          <div className="actions-cell" style={{ justifyContent: "flex-end" }}>
+                          <div className="actions-cell">
                             <Link
                               to={`/seller/products/${id}`}
                               className="btn-action-variants"
@@ -256,7 +256,7 @@ export const Dashboard = () => {
                     ? "No matching hardware listings found."
                     : "No hardware listings deployed by your operator account yet."}
                 </p>
-                <Link to="/products/create" className="deploy-btn" style={{ marginTop: "0.5rem" }}>
+                <Link to="/products/create" className="deploy-btn">
                   Deploy First Hardware Model
                 </Link>
               </div>

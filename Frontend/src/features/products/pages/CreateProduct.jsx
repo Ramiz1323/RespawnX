@@ -295,7 +295,7 @@ export const CreateProduct = () => {
               <ProductCard product={previewProduct} />
             </div>
 
-            <p style={{ fontSize: "0.78rem", color: "#8e95a5", lineHeight: "1.5", margin: "0.5rem 0 0" }}>
+            <p className="preview-note">
               💡 <em>Note:</em> After committing your hardware base model, you can configure switch types, colors, and add distinct variant pricing inside the Seller Terminal.
             </p>
           </div>

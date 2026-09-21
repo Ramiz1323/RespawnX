@@ -11,7 +11,7 @@ export const Footer = () => {
           {/* Brand Col */}
           <div className="footer-brand-col">
             <Link to="/" className="footer-logo">
-              <BrandLogoIcon size={24} style={{ color: "#00e5a3" }} />
+              <BrandLogoIcon size={24} className="logo-icon" />
               Respawn<span>X</span>
             </Link>
             <p className="footer-desc">

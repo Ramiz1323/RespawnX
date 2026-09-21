@@ -48,21 +48,7 @@ export const ProductCard = ({ product }) => {
 
         {/* Status Pill */}
         <div className="status-badge-container">
-          <span
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: "0.68rem",
-              fontWeight: 700,
-              letterSpacing: "0.05em",
-              padding: "0.2rem 0.5rem",
-              borderRadius: "4px",
-              background: totalStock > 0 ? "rgba(0, 229, 163, 0.15)" : "rgba(255, 74, 90, 0.15)",
-              color: totalStock > 0 ? "#00e5a3" : "#ff4a5a",
-              border: totalStock > 0 ? "1px solid rgba(0, 229, 163, 0.3)" : "1px solid rgba(255, 74, 90, 0.3)",
-              backdropFilter: "blur(8px)",
-              textTransform: "uppercase"
-            }}
-          >
+          <span className={`stock-status-pill ${totalStock > 0 ? "available" : "sold-out"}`}>
             {totalStock > 0 ? "Available" : "Sold Out"}
           </span>
         </div>

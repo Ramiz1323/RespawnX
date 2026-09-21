@@ -70,7 +70,7 @@ export const Navbar = () => {
           </Link>
 
           {user ? (
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <div className="user-group">
               <div className="user-pill">
                 <div className="status-dot" />
                 <span className="user-name">{user.fullname || user.email}</span>
@@ -78,18 +78,8 @@ export const Navbar = () => {
               </div>
               <button
                 type="button"
+                className="btn-logout"
                 onClick={handleLogout}
-                style={{
-                  background: "transparent",
-                  border: "1px solid rgba(255, 74, 90, 0.3)",
-                  color: "#ff4a5a",
-                  borderRadius: "4px",
-                  padding: "0.4rem 0.65rem",
-                  fontSize: "0.75rem",
-                  fontFamily: "'JetBrains Mono', monospace",
-                  cursor: "pointer",
-                  letterSpacing: "0.05em",
-                }}
                 title="Disconnect session"
               >
                 Exit
