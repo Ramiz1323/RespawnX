@@ -11,6 +11,7 @@ import {
 export const CartSummary = ({
   totalItems,
   subtotal,
+  totalSavings = 0,
   currency = "INR",
   onCheckout,
 }) => {
@@ -66,6 +67,13 @@ export const CartSummary = ({
           <span className="row-lbl">Hardware Subtotal</span>
           <span className="row-val">{formatCurrency(subtotal, currency)}</span>
         </div>
+
+        {totalSavings > 0 && (
+          <div className="matrix-row discount-row">
+            <span className="row-lbl">Seller Price Drop Savings</span>
+            <span className="row-val">-{formatCurrency(totalSavings, currency)}</span>
+          </div>
+        )}
 
         {promoApplied && (
           <div className="matrix-row discount-row">

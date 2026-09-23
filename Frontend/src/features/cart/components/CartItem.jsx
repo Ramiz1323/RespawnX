@@ -38,12 +38,20 @@ export const CartItem = ({ item, onIncrement, onDecrement, isUpdating }) => {
     }
   }
 
-  const unitPrice = item.price?.amount ?? 0;
-  const currency = item.price?.currency ?? "INR";
-  const quantity = item.quantity ?? 1;
+  const originalUnitPrice = Number(item.price?.amount) || 0;
+  const currentUnitPrice = Number(matchedVariant?.price?.amount ?? product?.price?.amount ?? originalUnitPrice) || 0;
+  const currency = item.price?.currency || matchedVariant?.price?.currency || product?.price?.currency || "INR";
+  const quantity = Number(item.quantity) || 1;
+  const unitPrice = currentUnitPrice;
   const lineTotal = unitPrice * quantity;
   const stock = matchedVariant?.stock ?? 10;
   const isMaxStock = stock !== undefined && quantity >= stock;
+
+  // Price calculations when seller changes the price
+  const hasSavings = originalUnitPrice > currentUnitPrice;
+  const unitSavings = hasSavings ? originalUnitPrice - currentUnitPrice : 0;
+  const totalSavings = unitSavings * quantity;
+  const isPriceIncreased = currentUnitPrice > originalUnitPrice && originalUnitPrice > 0;
 
   return (
     <div className="cyber-cart-item">
@@ -81,8 +89,30 @@ export const CartItem = ({ item, onIncrement, onDecrement, isUpdating }) => {
         )}
 
         <div className="item-unit-price">
-          Unit Price: <span>{formatCurrency(unitPrice, currency)}</span>
+          Unit Price:{" "}
+          {hasSavings ? (
+            <>
+              <span className="original-price-strike">{formatCurrency(originalUnitPrice, currency)}</span>
+              <span className="live-price-highlight">{formatCurrency(currentUnitPrice, currency)}</span>
+            </>
+          ) : (
+            <span>{formatCurrency(unitPrice, currency)}</span>
+          )}
         </div>
+
+        {/* Dynamic calculation banner for seller price updates / savings */}
+        {hasSavings && (
+          <div className="item-savings-banner">
+            You can buy it for <span className="deal-buy-price">{formatCurrency(currentUnitPrice, currency)}</span> and you can save <span className="deal-save-price">{formatCurrency(unitSavings, currency)}</span>
+            {quantity > 1 && <span className="total-savings-pill"> (Save {formatCurrency(totalSavings, currency)} total)</span>}
+          </div>
+        )}
+
+        {isPriceIncreased && (
+          <div className="item-price-notice">
+            [NOTICE] Seller updated price to {formatCurrency(currentUnitPrice, currency)}
+          </div>
+        )}
       </div>
 
       {/* Quantity & Action Matrix */}

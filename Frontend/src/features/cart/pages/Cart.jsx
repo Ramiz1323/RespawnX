@@ -26,15 +26,26 @@ export const Cart = () => {
     () => items.reduce((acc, item) => acc + (Number(item?.quantity) || 0), 0),
     [items]
   );
-  const subtotal = useMemo(
-    () =>
-      items.reduce((acc, item) => {
-        const itemPrice = Number(item?.price?.amount) || 0;
-        const qty = Number(item?.quantity) || 0;
-        return acc + itemPrice * qty;
-      }, 0),
-    [items]
-  );
+  const { subtotal, totalSavings } = useMemo(() => {
+    let sub = 0;
+    let savings = 0;
+    items.forEach((item) => {
+      const product = typeof item.product === "object" ? item.product : null;
+      const variantId = typeof item.variant === "object" ? item.variant?._id : item.variant;
+      const matchedVariant = product?.variants?.find(
+        (v) => String(v._id || v.id) === String(variantId)
+      );
+      const originalPrice = Number(item?.price?.amount) || 0;
+      const livePrice = Number(matchedVariant?.price?.amount ?? product?.price?.amount ?? originalPrice) || 0;
+      const qty = Number(item?.quantity) || 0;
+
+      sub += livePrice * qty;
+      if (originalPrice > livePrice) {
+        savings += (originalPrice - livePrice) * qty;
+      }
+    });
+    return { subtotal: sub, totalSavings: savings };
+  }, [items]);
   const currency = items[0]?.price?.currency || "INR";
 
   const [updatingItemId, setUpdatingItemId] = useState(null);
@@ -168,6 +179,7 @@ export const Cart = () => {
               <CartSummary
                 totalItems={totalItems}
                 subtotal={subtotal}
+                totalSavings={totalSavings}
                 currency={currency}
               />
             </aside>
