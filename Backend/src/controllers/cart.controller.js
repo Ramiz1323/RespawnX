@@ -1,6 +1,7 @@
 import productModel from "../models/product.model.js";
 import cartModel from "../models/cart.model.js";
 import { stockOfVariant } from "../dao/product.dao.js";
+import mongoose from "mongoose";
 
 export const addToCart = async (req, res) => {
     const { productId, variantId } = req.params;
@@ -45,7 +46,7 @@ export const addToCart = async (req, res) => {
         });
     }
 
-    if(quantity > stock) {
+    if (quantity > stock) {
         return res.status(400).json({
             success: false,
             message: `Only ${stock} items left in stock`
@@ -76,9 +77,63 @@ export const addToCart = async (req, res) => {
 export const getCart = async (req, res) => {
     const user = req.user;
 
-    let cart = await cartModel.findOne({ user: user._id }).populate("items.product");
+    let cart = await cartModel.findOne({ user: user._id }).aggregate(
+        [
+            {
+                $match: {
+                    user: new mongoose.Types.ObjectId(user._id)
+                }
+            },
+            { $unwind: { path: '$items' } },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'items.product',
+                    foreignField: '_id',
+                    as: 'items.product'
+                }
+            },
+            { $unwind: { path: '$items.product' } },
+            {
+                $unwind: { path: '$items.product.variants' }
+            },
+            {
+                $match: {
+                    $expr: {
+                        $eq: [
+                            '$items.variant',
+                            '$items.product.variants._id'
+                        ]
+                    }
+                }
+            },
+            {
+                $addFields: {
+                    itemPrice: {
+                        price: {
+                            $multiply: [
+                                '$items.quantity',
+                                '$items.product.variants.price.amount'
+                            ]
+                        },
+                        currency:
+                            '$items.product.variants.price.currency'
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    totalPrice: { $sum: '$itemPrice.price' },
+                    currency: {
+                        $first: '$itemPrice.currency'
+                    },
+                    items: { $push: '$items' }
+                }
+            }
+        ]);
 
-    if(!cart) {
+    if (!cart) {
         cart = await cartModel.create({ user: user._id });
     }
 
@@ -97,28 +152,28 @@ export const incrementCartItemQuantity = async (req, res) => {
         "variants._id": variantId
     })
 
-    if(!product) { 
+    if (!product) {
         return res.status(404).json({
             message: "Product or variant not found",
             success: false
         })
     }
 
-    
+
     const cart = await cartModel.findOne({ user: req.user._id });
 
-    if(!cart) {
+    if (!cart) {
         return res.status(404).json({
             message: "Cart not found",
             success: false
         })
     }
-    
+
     const stock = stockOfVariant(productId, variantId);
 
     const itemQuantityInCart = cart.items.find(item => item.product.toString() === productId && item.variant?.toString() === variantId)?.quantity || 0;
 
-    if(itemQuantityInCart + 1 > stock) {
+    if (itemQuantityInCart + 1 > stock) {
         return res.status(400).json({
             message: `Only ${stock} items left in stock and you already have ${itemQuantityInCart} items in your cart.`,
             success: false
@@ -126,7 +181,7 @@ export const incrementCartItemQuantity = async (req, res) => {
     }
 
     await cartModel.findOneAndUpdate(
-        {user: req.user._id, "items.product": productId, "items.variant": variantId},
+        { user: req.user._id, "items.product": productId, "items.variant": variantId },
         { $inc: { "items.$.quantity": 1 } },
         { new: true }
     );
