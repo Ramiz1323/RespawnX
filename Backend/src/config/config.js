@@ -3,23 +3,31 @@ import dotenv from "dotenv";
 dotenv.config();
 
 if (!process.env.MONGO_URI) {
-  throw new Error("Please set your MONGO_URI environment variable");
+  throw new Error("Please set your MONGO_URI environment variables");
 }
 
 if (!process.env.JWT_SECRET) {
-  throw new Error("Please set your JWT_SECRET environment variable");
+  throw new Error("Please set your JWT_SECRET environment variables");
 }
 
 if(!process.env.GOOGLE_CLIENT_ID){
-  throw new Error("Please set your GOOGLE_CLIENT_ID environment variable")
+  throw new Error("Please set your GOOGLE_CLIENT_ID environment variables")
 }
 
 if(!process.env.GOOGLE_CLIENT_SECRET){
-  throw new Error("Please set your GOOGLE_CLIENT_SECRET environment variable")
+  throw new Error("Please set your GOOGLE_CLIENT_SECRET environment variables")
 }
 
 if(!process.env.IMAGEKIT_PRIVATE_KEY){
-  throw new Error("Please set your IMAGEKIT_PRIVATE_KEY environment variable")
+  throw new Error("Please set your IMAGEKIT_PRIVATE_KEY environment variables")
+}
+
+if (!process.env.RAZORPAY_KEY_ID) {
+  throw new Error("RAZORPAY_KEY_ID is not defined in environment variables");
+}
+
+if (!process.env.RAZORPAY_KEY_SECRET) {
+  throw new Error("RAZORPAY_KEY_SECRET is not defined in environment variables");
 }
 
 export const config = {
@@ -29,4 +37,6 @@ export const config = {
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   NODE_ENV: process.env.NODE_ENV || "development",
   IMAGEKIT_PRIVATE_KEY: process.env.IMAGEKIT_PRIVATE_KEY,
+  RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
+  RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET
 };
