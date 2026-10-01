@@ -83,7 +83,7 @@ export const getCart = async (req, res) => {
     let cart = await getCartDetails(user._id);
 
     if (!cart) {
-        cart = await cartModel.create({ user: user._id });
+        cart = await cartModel.findOne({ user: user._id }) || await cartModel.create({ user: user._id, items: [] });
     }
 
     return res.status(200).json({

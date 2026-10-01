@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
-import { addItem as addItemToCart, setItems, setLoading, setError, incrementCartItem, decrementCartItem } from "../state/cart.slice.js";
-import { addItem as addItemApi, getCart, incrementCartItemAPI, decrementCartItemAPI } from "../service/cart.api.js";
+import { addItem as addItemToCart, setCart, clearCart, setLoading, setError, incrementCartItem, decrementCartItem } from "../state/cart.slice.js";
+import { addItem as addItemApi, getCart, incrementCartItemAPI, decrementCartItemAPI, createCartAPI, verifyCartOrder } from "../service/cart.api.js";
 
 export const useCart = () => {
     const dispatch = useDispatch();
@@ -23,7 +23,7 @@ export const useCart = () => {
         dispatch(setLoading(true));
         try {
             const data = await getCart();
-            dispatch(setItems(data.cart.items));
+            dispatch(setCart(data?.cart || { items: [] }));
             return data.cart;
         } catch (err) {
             dispatch(setError(err?.response?.data?.message || err.message));
@@ -61,11 +61,44 @@ export const useCart = () => {
         }
     }
 
+    async function handleCreateCartOrder() {
+        dispatch(setLoading(true));
+        try {
+            const data = await createCartAPI();
+            return data;
+        } catch (err) {
+            dispatch(setError(err?.response?.data?.message || err.message));
+            throw err;
+        } finally {
+            dispatch(setLoading(false));
+        }
+    }
+
+    async function handleVerifyCartOrder({ razorpay_order_id, razorpay_payment_id, razorpay_signature }) {
+        dispatch(setLoading(true));
+        try {
+            const data = await verifyCartOrder({ razorpay_order_id, razorpay_payment_id, razorpay_signature });
+            return data;
+        } catch (err) {
+            dispatch(setError(err?.response?.data?.message || err.message));
+            throw err;
+        } finally {
+            dispatch(setLoading(false));
+        }
+    }
+    
+    function handleClearCart() {
+        dispatch(clearCart());
+    }
+    
     return {
         handleAddItem,
         handleGetCart,
         handleIncrementCartItem,
-        handleDecrementCartItem
+        handleDecrementCartItem,
+        handleCreateCartOrder,
+        handleVerifyCartOrder,
+        handleClearCart
     };
 };
 

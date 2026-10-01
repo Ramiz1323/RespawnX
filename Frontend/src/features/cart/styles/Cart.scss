@@ -788,6 +788,188 @@
       padding: 0.85rem 1.8rem;
     }
   }
+
+  // Payment Success Modal
+  .payment-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(4, 7, 13, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    animation: fadeIn 0.25s ease-out;
+
+    .payment-modal-container {
+      @include cyber-card;
+      background: #0d121d;
+      border: 1px solid rgba(0, 229, 163, 0.35);
+      border-radius: $radius-lg;
+      box-shadow: 0 0 40px rgba(0, 229, 163, 0.2), 0 20px 40px rgba(0, 0, 0, 0.8);
+      max-width: 520px;
+      width: 100%;
+      padding: 2.5rem 2rem;
+      position: relative;
+      text-align: center;
+      animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+      .modal-close-btn {
+        position: absolute;
+        top: 1.25rem;
+        right: 1.25rem;
+        background: transparent;
+        border: none;
+        color: $text-secondary;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: color $transition-fast;
+
+        &:hover {
+          color: $accent-color;
+        }
+      }
+
+      .modal-glow-badge {
+        width: 76px;
+        height: 76px;
+        margin: 0 auto 1.25rem;
+        background: $accent-dim;
+        border: 2px solid $accent-color;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $accent-color;
+        box-shadow: 0 0 30px rgba(0, 229, 163, 0.4);
+      }
+
+      .modal-telemetry-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: $font-mono;
+        font-size: 0.72rem;
+        color: $accent-color;
+        background: rgba(0, 229, 163, 0.08);
+        border: 1px solid rgba(0, 229, 163, 0.2);
+        padding: 0.25rem 0.65rem;
+        border-radius: $radius-sm;
+        margin-bottom: 0.75rem;
+
+        .dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: $accent-color;
+          box-shadow: 0 0 6px $accent-color;
+        }
+      }
+
+      .modal-title {
+        font-size: 1.6rem;
+        font-weight: 900;
+        color: $text-primary;
+        letter-spacing: -0.01em;
+        margin-bottom: 0.5rem;
+      }
+
+      .modal-subtitle {
+        font-size: 0.88rem;
+        color: $text-secondary;
+        line-height: 1.45;
+        margin-bottom: 1.75rem;
+      }
+
+      .modal-matrix-box {
+        background: $bg-input;
+        border: 1px solid $border-color;
+        border-radius: $radius-md;
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+        margin-bottom: 2rem;
+        text-align: left;
+
+        .matrix-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 0.82rem;
+
+          .matrix-lbl {
+            font-family: $font-mono;
+            color: $text-muted;
+            letter-spacing: 0.04em;
+          }
+
+          .matrix-val {
+            font-weight: 600;
+            color: $text-primary;
+
+            &.mono {
+              font-family: $font-mono;
+              font-size: 0.78rem;
+              color: $accent-color;
+              word-break: break-all;
+            }
+
+            &.highlight {
+              font-family: $font-sans;
+              font-size: 1.15rem;
+              font-weight: 800;
+              color: $accent-color;
+            }
+
+            &.verified {
+              display: inline-flex;
+              align-items: center;
+              gap: 0.35rem;
+              font-family: $font-mono;
+              font-size: 0.72rem;
+              color: #10b981;
+            }
+          }
+        }
+      }
+
+      .modal-actions {
+        .btn-modal-primary {
+          @include cyber-btn-primary;
+          width: 100%;
+          padding: 0.9rem 1.5rem;
+          font-size: 0.9rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @keyframes spin {
@@ -798,3 +980,4 @@
     transform: rotate(360deg);
   }
 }
+

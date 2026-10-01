@@ -11,9 +11,11 @@ export const CartItem = ({ item, onIncrement, onDecrement, isUpdating }) => {
   const variantId = typeof item.variant === "object" ? item.variant?._id : item.variant;
 
   // Locate matching variant for extra telemetry
-  const matchedVariant = product?.variants?.find(
-    (v) => String(v._id || v.id) === String(variantId)
-  );
+  const matchedVariant = Array.isArray(product?.variants)
+    ? product.variants.find((v) => String(v._id || v.id) === String(variantId))
+    : product?.variants && typeof product.variants === "object"
+    ? product.variants
+    : null;
 
   // Determine optimal thumbnail
   const imageUrl =

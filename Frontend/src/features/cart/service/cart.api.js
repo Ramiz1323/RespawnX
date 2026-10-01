@@ -27,3 +27,17 @@ export const decrementCartItemAPI = async ({ productId, variantId }) => {
     const response = await cartApiInstance.post(`/quantity/decrement/${productId}/${variantId}`);
     return response.data;
 }
+
+export const createCartAPI = async () => {
+    const response = await cartApiInstance.post('/payment/create/order');
+    return response.data;
+}
+
+export const verifyCartOrder = async({ razorpay_order_id, razorpay_payment_id, razorpay_signature }) => {
+    const response = await cartApiInstance.post('/payment/verify/order', {
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature
+    });
+    return response.data;
+}

@@ -5,7 +5,6 @@ import {
   ShieldCheckIcon,
   CpuIcon,
   TruckIcon,
-  CheckCircleIcon,
 } from "../../products/components/Icons";
 
 export const CartSummary = ({
@@ -14,13 +13,12 @@ export const CartSummary = ({
   totalSavings = 0,
   currency = "INR",
   onCheckout,
+  isProcessing = false,
 }) => {
   const [promoCode, setPromoCode] = useState("");
   const [discountPercent, setDiscountPercent] = useState(0);
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoError, setPromoError] = useState("");
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [dispatchSuccess, setDispatchSuccess] = useState(false);
 
   const handleApplyPromo = (e) => {
     e.preventDefault();
@@ -45,13 +43,10 @@ export const CartSummary = ({
   const estimatedTax = Math.round((subtotal - discountAmount) * 0.05); // 5% cyber tax estimate
   const finalTotal = Math.max(0, subtotal - discountAmount + estimatedTax + shippingFee);
 
-  const handleSimulatedCheckout = () => {
-    setIsCheckingOut(true);
-    setTimeout(() => {
-      setIsCheckingOut(false);
-      setDispatchSuccess(true);
-      if (onCheckout) onCheckout();
-    }, 1500);
+  const handleCheckoutClick = () => {
+    if (onCheckout) {
+      onCheckout({ finalTotal });
+    }
   };
 
   return (
@@ -140,34 +135,24 @@ export const CartSummary = ({
 
       {/* Checkout Action CTA */}
       <div className="checkout-action-zone">
-        {dispatchSuccess ? (
-          <div className="dispatch-success-banner">
-            <CheckCircleIcon size={22} className="success-icon" />
-            <div>
-              <strong>TRANSMISSION CONFIRMED!</strong>
-              <p>Hardware payload queued for priority battle station deployment.</p>
-            </div>
-          </div>
-        ) : (
-          <button
-            type="button"
-            className="btn-checkout-cta"
-            onClick={handleSimulatedCheckout}
-            disabled={totalItems === 0 || isCheckingOut}
-          >
-            {isCheckingOut ? (
-              <>
-                <span className="pulse-spinner" />
-                <span>COMMUNICATING WITH TELEMETRY NODE...</span>
-              </>
-            ) : (
-              <>
-                <BoltIcon size={18} />
-                <span>INITIATE GEAR DISPATCH</span>
-              </>
-            )}
-          </button>
-        )}
+        <button
+          type="button"
+          className="btn-checkout-cta"
+          onClick={handleCheckoutClick}
+          disabled={totalItems === 0 || isProcessing}
+        >
+          {isProcessing ? (
+            <>
+              <span className="pulse-spinner" />
+              <span>INITIALIZING SECURE PAYMENT...</span>
+            </>
+          ) : (
+            <>
+              <BoltIcon size={18} />
+              <span>INITIATE GEAR DISPATCH</span>
+            </>
+          )}
+        </button>
       </div>
 
       {/* Guarantees Matrix */}
