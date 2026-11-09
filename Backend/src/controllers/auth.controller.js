@@ -86,7 +86,8 @@ export const googleCallback = async (req, res) => {
     sameSite: "lax",
   });
 
-  res.redirect("http://localhost:5173/");
+  const redirectUrl = config.NODE_ENV === "production" ? "/" : "http://localhost:5173/";
+  res.redirect(redirectUrl);
 };
 
 export const login = async (req, res) => {
