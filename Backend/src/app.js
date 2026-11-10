@@ -6,6 +6,7 @@ import cartRouter from "./routes/cart.routes.js";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { config } from "./config/config.js";
+import cors from "cors";
 
 const app = express();
 
@@ -23,9 +24,15 @@ passport.use(new GoogleStrategy({
 }
 ))
 
+app.use(cors());
+
+const cors = {
+  origin: "http://localhost:5173" || config.FRONTEND_URL, 
+  credentials: true, 
+}
 
 //Routes
-app.get("/", (req, res) => {
+app.get("/api/health", (req, res) => {
   res.status(200).json({
     success: true,
     message: "Welcome to RespawnX Backend",

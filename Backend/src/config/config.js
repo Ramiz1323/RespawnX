@@ -2,6 +2,10 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+if(!process.env.PORT) {
+  throw new Error("Please set your PORT environment variables");
+}
+
 if (!process.env.MONGO_URI) {
   throw new Error("Please set your MONGO_URI environment variables");
 }
@@ -30,7 +34,12 @@ if (!process.env.RAZORPAY_KEY_SECRET) {
   throw new Error("RAZORPAY_KEY_SECRET is not defined in environment variables");
 }
 
+if(!process.env.FRONTEND_URL){
+  throw new Error("Please set your FRONTEND_URL environment variables")
+}
+
 export const config = {
+  PORT: process.env.PORT,
   MONGO_URI: process.env.MONGO_URI,
   JWT_SECRET: process.env.JWT_SECRET,
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
@@ -38,5 +47,6 @@ export const config = {
   NODE_ENV: process.env.NODE_ENV || "development",
   IMAGEKIT_PRIVATE_KEY: process.env.IMAGEKIT_PRIVATE_KEY,
   RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
-  RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET
+  RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,
+  FRONTEND_URL: process.env.FRONTEND_URL
 };
