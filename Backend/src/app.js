@@ -24,12 +24,13 @@ passport.use(new GoogleStrategy({
 }
 ))
 
-app.use(cors());
-
-const cors = {
-  origin: "http://localhost:5173" || config.FRONTEND_URL, 
-  credentials: true, 
-}
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    config.FRONTEND_URL
+  ].filter(Boolean),
+  credentials: true,
+}));
 
 //Routes
 app.get("/api/health", (req, res) => {
